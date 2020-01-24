@@ -2,11 +2,12 @@ package components;
 
 import misc.StatType;
 
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Stats {
-    private Map<StatType, Integer> stats = new HashMap<>();
+    private Map<StatType, Integer> stats = new EnumMap<StatType, Integer>(StatType.class);
 
     public Stats() {
         stats.put(StatType.EVASION, 0);
@@ -38,18 +39,10 @@ public class Stats {
      * @param statValue
      */
     public void decreaseStat(StatType statType, int statValue){
-        if (stats.get(statType) - statValue <0) {
-            stats.put(statType, 0);
-            return;
-        }
 
         int currentStatValue = stats.get(statType);
         int newStatValue     = currentStatValue - statValue;
         stats.put(statType, newStatValue);
-    }
-
-    public void setStats(StatType statType, int value) {
-        stats.put(statType, value);
     }
 
     public int getStatValue(StatType statType) {

@@ -12,17 +12,26 @@ public class EquippableItem extends Item {
         private int damage;
         private EquipmentType itemType;
 
-        public Builder(String name, EquipmentType equipmentType){
-            this.name   = name;
-            itemStats   = new Stats();
+        public Builder(String name){
+            this.name = name;
+            itemStats = new Stats();
             healthBoost = 0;
-            damage      = 0;
-            itemType    = equipmentType;
+            damage = 0;
         }
 
-        public Builder stat(StatType statType, int value) {
-            itemStats.increaseStat(statType, value);
-            return  this;
+        public Builder criticalChance(int value) {
+            itemStats.increaseStat(StatType.CRITICAL_CHANCE, value);
+            return this;
+        }
+
+        public Builder evasion(int value) {
+            itemStats.increaseStat(StatType.EVASION, value);
+            return this;
+        }
+
+        public Builder lifesteal(int value) {
+            itemStats.increaseStat(StatType.LIFESTEAL, value);
+            return this;
         }
 
         public Builder health(int value) {
@@ -32,11 +41,6 @@ public class EquippableItem extends Item {
 
         public Builder damage(int value) {
             damage = value;
-            return this;
-        }
-
-        public Builder type(EquipmentType type) {
-            itemType = type;
             return this;
         }
 
@@ -50,6 +54,5 @@ public class EquippableItem extends Item {
         setDamage(builder.damage);
         setHealthBoost(builder.healthBoost);
         setItemStats(builder.itemStats);
-        setItemType(builder.itemType);
     }
 }

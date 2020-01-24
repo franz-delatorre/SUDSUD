@@ -1,9 +1,8 @@
 package components.skill.list;
 
-import components.Health;
 import components.skill.Skill;
 import components.unit.Unit;
-import helper.HealthHelper;
+import util.HealthHelper;
 
 public class SoulSteal extends Skill {
     public SoulSteal(){

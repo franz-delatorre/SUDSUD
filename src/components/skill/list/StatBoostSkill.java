@@ -3,7 +3,7 @@ package components.skill.list;
 import components.Stats;
 import components.skill.Booster;
 import components.unit.Unit;
-import helper.StatHelper;
+import util.StatHelper;
 import misc.StatType;
 
 public class StatBoostSkill extends Booster {

@@ -1,13 +1,12 @@
 package game.engine;
 
 import components.geography.GameMap;
-import components.geography.Point;
 import components.geography.Room;
 import components.item.Inventory;
 import components.item.Item;
 import components.unit.Unit;
 import dialogue.Dialogue;
-import helper.MapHelper;
+import util.MapHelper;
 
 import java.util.ArrayList;
 

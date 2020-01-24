@@ -26,8 +26,18 @@ public abstract class Unit {
             return self();
         }
 
-        public T stat(StatType statType, int value) {
-            unitStats.increaseStat(statType, value);
+        public T evasion(int value) {
+            unitStats.increaseStat(StatType.EVASION, value);
+            return self();
+        }
+
+        public T lifesteal(int value) {
+            unitStats.increaseStat(StatType.LIFESTEAL, value);
+            return self();
+        }
+
+        public T criticalChance(int value) {
+            unitStats.increaseStat(StatType.CRITICAL_CHANCE, value);
             return self();
         }
 
