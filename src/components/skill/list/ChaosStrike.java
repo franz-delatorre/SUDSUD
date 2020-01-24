@@ -2,7 +2,7 @@ package components.skill.list;
 
 import components.skill.Skill;
 import components.unit.Unit;
-import utilities.HealthHelper;
+import helper.HealthHelper;
 
 public class ChaosStrike extends Skill {
     public ChaosStrike() {

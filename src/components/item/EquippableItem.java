@@ -1,6 +1,6 @@
 package components.item;
 
-import components.stats.Stats;
+import components.Stats;
 import misc.EquipmentType;
 import misc.StatType;
 
@@ -14,14 +14,14 @@ public class EquippableItem extends Item {
 
         public Builder(String name, EquipmentType equipmentType){
             this.name   = name;
-//            itemStats   = new Stats();
+            itemStats   = new Stats();
             healthBoost = 0;
             damage      = 0;
             itemType    = equipmentType;
         }
 
         public Builder stat(StatType statType, int value) {
-//            itemStats.increaseStat(statType, value);
+            itemStats.increaseStat(statType, value);
             return  this;
         }
 

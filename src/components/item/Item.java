@@ -1,7 +1,8 @@
 package components.item;
 
-import components.stats.Stats;
+import components.Stats;
 import misc.EquipmentType;
+import misc.StatType;
 
 public abstract class Item {
     private String name;
@@ -34,9 +35,9 @@ public abstract class Item {
         this.healthBoost = healthBoost;
     }
 
-//    public void setStats(StatType statType, int statValue) {
-//        itemStats.increaseStat(statType, statValue);
-//    }
+    public void setStats(StatType statType, int statValue) {
+        itemStats.increaseStat(statType, statValue);
+    }
 
     public String getName() {
         return name;

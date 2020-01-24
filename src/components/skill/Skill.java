@@ -1,5 +1,6 @@
 package components.skill;
 
+import components.Stats;
 import components.unit.Unit;
 
 public abstract class Skill{

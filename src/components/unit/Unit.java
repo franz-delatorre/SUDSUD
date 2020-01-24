@@ -1,15 +1,19 @@
 package components.unit;
 
+import components.Health;
+import components.Stats;
+import misc.StatType;
+
 public abstract class Unit {
     private String name;
+    private Health health;
     private int damage;
-    private int health;
     private Stats unitStats;
 
     abstract static class Builder<T extends Builder<T>>{
         private String name;
+        private Health health;
         private int damage;
-        private int health;
         private Stats unitStats;
 
         public Builder(){
@@ -28,7 +32,7 @@ public abstract class Unit {
         }
 
         public T health(int health) {
-            this.health = health;
+            this.health = new Health(health);
             return self();
         }
 
@@ -65,7 +69,7 @@ public abstract class Unit {
         return name;
     }
 
-    public int getHealth() {
+    public Health getHealth() {
         return health;
     }
 

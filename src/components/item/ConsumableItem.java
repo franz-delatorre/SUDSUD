@@ -1,5 +1,7 @@
 package components.item;
 
+import components.item.Item;
+
 public class ConsumableItem extends Item {
     private boolean isUsed;
 
