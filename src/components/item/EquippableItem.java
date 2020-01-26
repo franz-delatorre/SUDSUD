@@ -5,18 +5,26 @@ import misc.EquipmentType;
 import misc.StatType;
 
 public class EquippableItem extends Item {
-    public static class Builder {
+    private EquipmentType equipmentType;
+
+    //Builder Class
+    public static class Builder extends Item.Builder<Builder> {
         private String name;
         private Stats itemStats;
         private int healthBoost;
         private int damage;
-        private EquipmentType itemType;
+        private EquipmentType equipmentType;
 
         public Builder(String name){
             this.name = name;
             itemStats = new Stats();
             healthBoost = 0;
             damage = 0;
+        }
+
+        public Builder equipmentType(EquipmentType type) {
+            equipmentType = type;
+            return this;
         }
 
         public Builder criticalChance(int value) {
@@ -44,15 +52,21 @@ public class EquippableItem extends Item {
             return this;
         }
 
+        @Override
+        protected Builder self() {
+            return this;
+        }
+
         public EquippableItem build() {
             return new EquippableItem(this);
         }
     }
 
     private EquippableItem(Builder builder){
-        setName(builder.name);
-        setDamage(builder.damage);
-        setHealthBoost(builder.healthBoost);
-        setItemStats(builder.itemStats);
+        super(builder);
+    }
+
+    public EquipmentType getEquipmentType() {
+        return equipmentType;
     }
 }

@@ -3,7 +3,11 @@ package util;
 import components.Stats;
 import misc.StatType;
 
-public class StatHelper {
+public final class StatHelper {
+
+    private StatHelper() {
+
+    }
 
     /**
      * Increases the mainStats by the subStats values.

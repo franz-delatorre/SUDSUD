@@ -9,8 +9,12 @@ import dialogue.Dialogue;
 import util.MapHelper;
 
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class GameManager {
+
+    private static final Scanner scanner = new Scanner(System.in);
+
     private ArrayList<Item> gameInventory;
     private ArrayList<Unit> units;
     private ArrayList<Room> rooms;
@@ -36,34 +40,43 @@ public class GameManager {
         map              = gi.getGameMap();
     }
 
-    public void gameProgress() {
-        switch (progress) {
-            case 0:
-                Dialogue.actOne();
-                progress = 1;
-                break;
-            case 1:
-                MapHelper.showMap(map);
-                progress = 2;
-                break;
-            case 2:
-                this.getUserAction();
-                gameOver = true;
-        }
+    public void initialize() {
+        Dialogue.actOne();
     }
 
-    private void getUserAction() {
-        String opt = GameIO.getMainOption();
+    public void getUserAction() {
+
+        System.out.println("[I] inventory");
+        System.out.println("[M] map");
+        System.out.println("[Q] quit");
+        String opt = scanner.nextLine().toLowerCase();
+
         switch (opt) {
             case "i":
                 break;
             case "m":
-                MapHelper.showMap(map);
+                map.showMap();
+                move();
                 break;
+            default:
+                System.out.println("Action invalid.");
+                getUserAction();
         }
+    }
+
+    private void move() {
+        System.out.println("[e] Exit map");
+
+
+
+        System.out.println("[W] Move up");
+        System.out.println("[A] Move left");
+        System.out.println("[S] Move down");
+        System.out.println("[A] Move right");
     }
 
     public boolean gameIsOver() {
         return gameOver;
     }
+
 }

@@ -15,6 +15,10 @@ public class Room {
         this.name  = name;
     }
 
+    public Map<Direction, Room> getAdjacentRoom() {
+        return adjacentRoom;
+    }
+
     public Point getPoint() {
         return point;
     }

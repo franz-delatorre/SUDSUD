@@ -2,7 +2,11 @@ package util;
 
 import components.Health;
 
-public class HealthHelper {
+public final class HealthHelper {
+
+    private HealthHelper() {
+
+    }
 
     /**
      * Reduces the current health by the damage value given;

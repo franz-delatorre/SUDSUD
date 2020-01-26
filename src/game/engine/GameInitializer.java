@@ -11,9 +11,6 @@ import components.unit.SkilledUnit;
 import components.unit.Unit;
 import components.unit.UnskilledUnit;
 import misc.Direction;
-import misc.EquipmentType;
-import misc.SkillList;
-import misc.StatType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,10 +20,10 @@ public class GameInitializer implements Initializer {
     private ArrayList<Room> openRooms = new ArrayList<>();
     private ArrayList<Room> rooms = new ArrayList<>();
     private ArrayList<Unit> units = new ArrayList<>();
-    private Map<SkillList, Skill> skills = new HashMap();
+    private Map<Skill, Skill> skills = new HashMap();
     private ArrayList<Item> items = new ArrayList<>();
     private GameMap map;
-    private Point heroLocation;
+    private Room heroLocation;
 
     public GameMap getGameMap() {
         return map;
@@ -42,6 +39,12 @@ public class GameInitializer implements Initializer {
 
     public ArrayList<Item> getItems() {
         return items;
+    }
+
+    public void initialize() {
+        setupUnits();
+        setupItems();
+        setupRooms();
     }
 
     @Override
@@ -81,30 +84,49 @@ public class GameInitializer implements Initializer {
         openRooms.add(livingRoom);
         openRooms.add(servantQuarters);
 
-        heroLocation = hallwayOne.getPoint();
+        heroLocation = hallwayOne                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ;
         map = new GameMap(openRooms, heroLocation);
     }
 
     @Override
     public void setupUnits() {
-        this.setupSkills();
+
+        // == Construction of Skills ==
+        HealSkill lesserHeal = new HealSkill("Lesser Heal");
+        HealSkill heal = new HealSkill("Heal");
+        DamageSkill lightningBolt = new DamageSkill("Lightning Bolt", 15);
+        DamageSkill fireBolt = new DamageSkill("Fire Bolt", 30);
+        SoulSteal soulSteal = new SoulSteal();
+        ChaosStrike chaosStrike = new ChaosStrike();
+        StatBoostSkill minorBuff = new StatBoostSkill.Builder("Minor Buff")
+                .criticalChance(5)
+                .evasion(5)
+                .lifesteal(5)
+                .duration(3)
+                .build();
+        StatBoostSkill greaterBuff = new StatBoostSkill.Builder("Improved Buff")
+                .criticalChance(10)
+                .evasion(10)
+                .lifesteal(10)
+                .duration(5)
+                .build();
+
+        // == Construction of units ==
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .damage(10)
                 .health(100)
                 .name("Alucard")
                 .lifesteal(7)
-                .setSkill(skills.get(SkillList.SOUL_STEAL))
+                .setSkill(soulSteal)
                 .build();
-
         SkilledUnit dracula = new SkilledUnit.Builder()
                 .damage(65).health(700)
                 .name("Vlad the Impaler")
                 .evasion(25)
                 .criticalChance(25)
                 .lifesteal(25)
-                .setSkill(skills.get(SkillList.CHAOS_STRIKE))
+                .setSkill(chaosStrike)
                 .build();
-
         SkilledUnit warlock = new SkilledUnit.Builder()
                 .damage(25)
                 .health(200)
@@ -112,18 +134,16 @@ public class GameInitializer implements Initializer {
                 .evasion(10)
                 .criticalChance(10)
                 .lifesteal(25)
-                .setSkill(skills.get(SkillList.HEAL))
+                .setSkill(heal)
                 .build();
-
         SkilledUnit werewolf = new SkilledUnit.Builder()
                 .damage(40).health(250)
                 .name("Werewolf")
                 .evasion(10)
                 .criticalChance(10)
                 .lifesteal(25)
-                .setSkill(skills.get(SkillList.FIRE_BOLT))
+                .setSkill(fireBolt)
                 .build();
-
         SkilledUnit minotaur = new SkilledUnit.Builder()
                 .damage(60)
                 .health(350)
@@ -131,36 +151,32 @@ public class GameInitializer implements Initializer {
                 .evasion(5)
                 .criticalChance(25)
                 .lifesteal(5)
-                .setSkill(skills.get(SkillList.GREATER_BUFF))
+                .setSkill(greaterBuff)
                 .build();
-
         SkilledUnit medusa = new SkilledUnit.Builder()
                 .damage(15)
                 .health(110)
                 .name("Medusa")
                 .evasion(5)
                 .criticalChance(10)
-                .setSkill(skills.get(SkillList.LESSER_HEAL))
+                .setSkill(lesserHeal)
                 .build();
-
         SkilledUnit casper = new SkilledUnit.Builder()
                 .damage(20)
                 .health(170)
                 .name("Casper")
                 .evasion(10)
                 .criticalChance(5)
-                .setSkill(skills.get(SkillList.MINOR_BUFF))
+                .setSkill(minorBuff)
                 .build();
-
         SkilledUnit lilith = new SkilledUnit.Builder()
                 .damage(30)
                 .health(210)
                 .name("Lilith")
                 .criticalChance(10)
                 .lifesteal(10)
-                .setSkill(skills.get(SkillList.LIGHTNING_BOLT))
+                .setSkill(lightningBolt)
                 .build();
-
         SkilledUnit general = new SkilledUnit.Builder()
                 .damage(35)
                 .health(250)
@@ -168,8 +184,8 @@ public class GameInitializer implements Initializer {
                 .evasion(10)
                 .criticalChance(25)
                 .lifesteal(10)
+                .setSkill(greaterBuff)
                 .build();
-
         SkilledUnit priestess = new SkilledUnit.Builder()
                 .damage(40)
                 .health(400)
@@ -177,29 +193,26 @@ public class GameInitializer implements Initializer {
                 .evasion(25)
                 .criticalChance(10)
                 .lifesteal(10)
+                .setSkill(chaosStrike)
                 .build();
-
         UnskilledUnit banshee = new UnskilledUnit.Builder()
                 .damage(8)
                 .health(80)
                 .name("Banshee")
                 .evasion(5)
                 .build();
-
         UnskilledUnit imp = new UnskilledUnit.Builder()
                 .damage(12)
                 .health(100)
                 .name("Imp")
                 .criticalChance(5)
                 .build();
-
         UnskilledUnit vampire = new UnskilledUnit.Builder()
                 .damage(15)
                 .health(120)
                 .name("Vampire")
                 .lifesteal(10)
                 .build();
-
     }
 
     @Override
@@ -263,35 +276,4 @@ public class GameInitializer implements Initializer {
         items.add(Talisman);
     }
 
-    @Override
-    public void setupSkills() {
-        HealSkill lesserHeal = new HealSkill("Lesser Heal");
-        HealSkill heal = new HealSkill("Heal");
-        DamageSkill lightningBolt = new DamageSkill("Lightning Bolt", 15);
-        DamageSkill fireBolt = new DamageSkill("Fire Bolt", 30);
-        SoulSteal soulSteal = new SoulSteal();
-        ChaosStrike chaosStrike = new ChaosStrike();
-        StatBoostSkill minorBuff = new StatBoostSkill.Builder("Minor Buff")
-                .criticalChance(5)
-                .evasion(5)
-                .lifesteal(5)
-                .duration(3)
-                .build();
-
-        StatBoostSkill greaterBuff = new StatBoostSkill.Builder("Improved Buff")
-                .criticalChance(10)
-                .evasion(10)
-                .lifesteal(10)
-                .duration(5)
-                .build();
-
-        skills.put(SkillList.LESSER_HEAL, lesserHeal);
-        skills.put(SkillList.HEAL, heal);
-        skills.put(SkillList.LIGHTNING_BOLT, lightningBolt);
-        skills.put(SkillList.FIRE_BOLT, fireBolt);
-        skills.put(SkillList.SOUL_STEAL, soulSteal);
-        skills.put(SkillList.CHAOS_STRIKE, chaosStrike);
-        skills.put(SkillList.MINOR_BUFF, minorBuff);
-        skills.put(SkillList.GREATER_BUFF, greaterBuff);
-    }
 }

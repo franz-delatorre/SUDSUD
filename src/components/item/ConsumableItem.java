@@ -4,10 +4,14 @@ import components.Stats;
 import components.item.Item;
 import misc.EquipmentType;
 import misc.StatType;
+import util.StatHelper;
 
 public class ConsumableItem extends Item {
-    private boolean isUsed;
-    public static class Builder {
+
+    private boolean isConsumed;
+
+    //Builder Class
+    public static class Builder extends Item.Builder {
         private String name;
         private Stats itemStats;
         private int healthBoost;
@@ -47,27 +51,30 @@ public class ConsumableItem extends Item {
             return this;
         }
 
+        @Override
+        protected Object self() {
+            return this;
+        }
+
         public ConsumableItem build() {
             return new ConsumableItem(this);
         }
     }
 
     private ConsumableItem(Builder builder){
+        super(builder);
         setName(builder.name);
         setDamage(builder.damage);
         setHealthBoost(builder.healthBoost);
         setItemStats(builder.itemStats);
     }
 
-    public ConsumableItem() {
-        this.isUsed = false;
-    }
-
     public boolean isUsed() {
-        return isUsed;
+        return isConsumed;
     }
 
-    public void setUsed(boolean used) {
-        isUsed = used;
+    public void useItem(Stats stats) {
+        isConsumed = true;
+        StatHelper.increaseStats(stats, getItemStats());
     }
 }

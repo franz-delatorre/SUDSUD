@@ -11,10 +11,8 @@ public class GameEngine implements GameCycle {
 
     @Override
     public void start() {
-        while (!gameOver) {
-            gameManager.gameProgress();
-
-            gameOver = gameManager.gameIsOver();
+        while (!gameManager.gameIsOver()) {
+            gameManager.initialize();
         }
     }
 }

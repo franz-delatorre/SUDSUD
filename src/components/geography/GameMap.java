@@ -6,14 +6,14 @@ import java.util.ArrayList;
 
 public class GameMap {
     private ArrayList<Room> openRooms;
-    private Point heroLocation;
+    private Room heroLocation;
 
-    public GameMap(ArrayList<Room> openRooms, Point heroLocation) {
+    public GameMap(ArrayList<Room> openRooms, Room heroLocation) {
         this.openRooms = openRooms;
         this.heroLocation = heroLocation;
     }
 
-    public void setHeroLocation(Point heroLocation) {
+    public void setHeroLocation(Room heroLocation) {
         this.heroLocation = heroLocation;
     }
 
@@ -25,8 +25,63 @@ public class GameMap {
         return openRooms;
     }
 
-    public Point getHeroLocation() {
+    public Room getHeroLocation() {
         return heroLocation;
+    }
+
+    /**
+     * Shows the map of the available rooms based on the user's progress. Will also show
+     * the current location of the player's character.
+     */
+    public void showMap() {
+
+        // Index 0 for min range and index 1 for max range
+        int[] xRange = {0, 0};
+        int[] yRange = {0, 0};
+
+        //Sets the x and y axis range of the map.
+        for (int it = 0; it < openRooms.size(); it++) {
+            Point rmPoint = openRooms.get(it).getPoint();
+            xRange = getAxisRange(xRange, rmPoint.getxAxis());
+            yRange = getAxisRange(yRange, rmPoint.getyAxis());
+        }
+
+        System.out.println("=================================");
+        for (int y = yRange[1]; y >= yRange[0]; y--) {
+            for (int x = xRange[0]; x <= xRange[1]; x++) {
+
+                //Checks if the room exist at the specified point
+                if (roomExist(new Point(x, y))) {
+                    Point heroPoints = heroLocation.getPoint();
+
+                    //Checks if the hero is at the current specified point
+                    if (heroPoints.getyAxis() == y && heroPoints.getxAxis() == x) {
+                        System.out.printf("[ * ]");
+                    } else {
+                        System.out.printf("[   ]");
+                    }
+                } else {
+                    System.out.printf("\t  ");
+                }
+            }
+            System.out.println("\n");
+        }
+        System.out.println("=================================");
+    }
+
+    /**
+     * Gets the min and max range of each the axis. Index 0 is the min and index 1 is the
+     * max range.
+     * @param range
+     * @param axis
+     * @return
+     */
+    private int[] getAxisRange(int[] range, int axis) {
+        int min = range[0];
+        int max = range[1];
+        if (axis < range[0]) min = axis;
+        if (axis > range[1]) max = axis;
+        return new int[] {min, max};
     }
 
     /**
@@ -34,7 +89,7 @@ public class GameMap {
      * @param pt
      * @return
      */
-    public boolean roomExist(Point pt) {
+    private boolean roomExist(Point pt) {
         for (int it = 0; it < openRooms.size(); it++) {
             Point o = openRooms.get(it).getPoint();
             if (o.getxAxis() == pt.getxAxis() && o.getyAxis() == pt.getyAxis()) {
