@@ -73,6 +73,10 @@ public class ConsumableItem extends Item {
         return isConsumed;
     }
 
+    /**
+     * Uses the item and adds all the item's properties to the user
+     * @param stats
+     */
     public void useItem(Stats stats) {
         isConsumed = true;
         StatHelper.increaseStats(stats, getItemStats());

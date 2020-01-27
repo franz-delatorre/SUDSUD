@@ -3,8 +3,11 @@ package game.engine;
 import components.geography.Room;
 
 import java.util.ArrayList;
+import java.util.Queue;
 
 public class Progress {
+    Queue<Room> roomOpened = new Queue<Room>() {
+    }
     ArrayList<ArrayList<Room>> roomsOpened = new ArrayList<>();
 
     public Progress() {

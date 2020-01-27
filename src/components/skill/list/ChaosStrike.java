@@ -9,6 +9,11 @@ public class ChaosStrike extends Skill {
         setName("Chaos Strike");
     }
 
+    /**
+     * Deals 4 times the maximum damage of the user.
+     * @param user
+     * @param victim
+     */
     @Override
     public void skillEffect(Unit user, Unit victim) {
         int damage = user.getDamage() * 4;

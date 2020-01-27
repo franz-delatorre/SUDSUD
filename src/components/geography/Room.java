@@ -29,12 +29,20 @@ public class Room{
         return adjacentRoom;
     }
 
+    public Room clone(){
+        return new Room(name, point);
+    }
+
     public Point getPoint() {
         return point;
     }
 
     public String getName() {
         return name;
+    }
+
+    public Room getAdjacentRoom(Direction to) {
+        return adjacentRoom.get(to);
     }
 
     /**
@@ -51,20 +59,21 @@ public class Room{
         room.setAdjacentRoom(to.getOpposite(), this);
     }
 
-    public Room getAdjacentRoom(Direction to) {
-        return adjacentRoom.get(to);
-    }
-
+    /**
+     * Returns true if the adjacent room is not equal to null.
+     * @param to
+     * @return
+     */
     public boolean adjacentRoomExist(Direction to) {
         if (adjacentRoom.get(to) == null) return false;
         return true;
     }
 
+    /**
+     * Checks if the enemy in this room is alive.
+     * @return
+     */
     public boolean enemyIsAlive() {
         return enemy.isAlive();
-    }
-
-    public Room clone(){
-        return new Room(name, point);
     }
 }

@@ -54,6 +54,10 @@ public class GameManager {
         finalBoss = gi.getFinalBoss();
     }
 
+    /**
+     * Starts the game, will check if there is a dialogue for the progress. Game progress
+     * will increment if the current progress boss is slain.
+     */
     public void start() {
 //        dialogue.getDialogue(progress);
         while (progressBossIsAlive()) {
@@ -61,6 +65,9 @@ public class GameManager {
         }
     }
 
+    /**
+     * Gets the user's action in the main action UI.
+     */
     private void getUserAction() {
 
         System.out.println("[I] inventory");
@@ -81,6 +88,10 @@ public class GameManager {
         }
     }
 
+    /**
+     * Will move the character around the map. Users cannot move to the adjacent room if
+     * it is not listed in the open rooms of the current map used.
+     */
     private void move() {
         System.out.println("[e] Exit map");
 
@@ -119,6 +130,10 @@ public class GameManager {
         move();
     }
 
+    /**
+     * Moves the unit to the specified direction
+     * @param to
+     */
     private void moveTo(Direction to) {
         Room rm = currentMap.getHeroLocation();
         if (currentMap.canMoveToAdjacentRoom(to, rm)) {
@@ -131,12 +146,24 @@ public class GameManager {
         }
     }
 
+    /**
+     * Checks if the room has an enemy. If the enemy is alive it will
+     * simulate a battle between the hero and the enemy. If the player is defeated
+     * he will choose to fight again or not. If the player will not fight on then he
+     * will be moved back to the last room he went to.
+     */
     private void checkRoomForEnemy() {
         Room room = currentMap.getHeroLocation();
         Unit enemy = room.getEnemy();
+        // Checks if the room has an enemy
         if (enemy == null) return;
+
+        //Checks if the enemy is still alive
         if (enemy.isAlive()) {
             bm.setEnemy(enemy);
+
+            //Will check who wins the battle. returns 1 if the player wins and
+            // returns zero if otherwise.
             if (bm.toBattle() > 0) {
                 System.out.println("You win!! ");
                 checkBossIsAlive();
@@ -154,11 +181,15 @@ public class GameManager {
         return gameOver;
     }
 
+    // Checks if the boss of the current progress is still alive
     private boolean progressBossIsAlive() {
         Room bossRoom = currentMap.getBossRoom();
         return bossRoom.getEnemy().isAlive();
     }
 
+    /**
+     * Increments the progress if the boss of the current progress is slain.
+     */
     private void raiseProgress() {
         if (progress >= 2 && currentMap == mapOne) {
             currentMap = mapTwo;
@@ -178,6 +209,10 @@ public class GameManager {
         }
     }
 
+    /**
+     * Asks the user if they will fight again after losing to the enemy.
+     * @return
+     */
     private boolean fightAgain() {
         System.out.println("You Lost, fight again? [Y] [N]");
         switch (scanner.nextLine().toLowerCase()) {
@@ -192,6 +227,9 @@ public class GameManager {
         return true;
     }
 
+    /**
+     * Checks if the progress boss is still alive
+     */
     private void checkBossIsAlive() {
         ArrayList<Room> rooms = currentProgress.getOpenedRooms(progress);
         Room room = rooms.get(rooms.size()-1);

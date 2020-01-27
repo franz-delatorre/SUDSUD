@@ -49,11 +49,20 @@ public class StatBoostSkill extends Booster {
         setDuration(builder.duration);
     }
 
+    /**
+     * Buffs the user's stats for a limited turn
+     * @param user
+     * @param victim
+     */
     @Override
     public void skillEffect(Unit user, Unit victim) {
         StatHelper.increaseStats(user.getUnitStats(), this.skillStats);
     }
 
+    /**
+     * Debuffs the user's stats if the limited turn is over.
+     * @param unit
+     */
     @Override
     public void skillAfterEffect(Unit unit) {
         StatHelper.decreaseStats(unit.getUnitStats(), this.skillStats);

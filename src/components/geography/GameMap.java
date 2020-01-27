@@ -106,6 +106,13 @@ public class GameMap {
         return false;
     }
 
+    /**
+     * Will return true if the adjacent direction's room is in the list of
+     * opened rooms in the game map.
+     * @param to
+     * @param room
+     * @return
+     */
     public  boolean canMoveToAdjacentRoom (Direction to, Room room) {
         Room adjRm = room.getAdjacentRoom(to);
         if (openRooms.contains(adjRm)) return true;

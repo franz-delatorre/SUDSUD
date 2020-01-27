@@ -20,6 +20,12 @@ public class DamageSkill extends Skill {
         this.damage = damage;
     }
 
+    /**
+     * Deals damage to the opponent. The damage dealt is based on
+     * the damage set
+     * @param user
+     * @param victim
+     */
     @Override
     public void skillEffect(Unit user, Unit victim) {
         Health victimHealth  = victim.getHealth();

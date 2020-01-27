@@ -66,6 +66,12 @@ public class GameInitializer implements Initializer {
         setupDialogue();
     }
 
+    /**
+     * Sets up the rooms in the game. There are two map for this game so each room will
+     * have a clone instance of itself. The only difference they will have is/are the
+     * enemy within the room. Will also set the game progress for each map. Game Progress
+     * is used to open the other rooms in the map once the boss is slain.
+     */
     @Override
     public void setupRooms() {
         // Rooms of the first map
@@ -103,7 +109,7 @@ public class GameInitializer implements Initializer {
         servantQuarters_2.setEnemy(units.get("death"));
         hallwayOne_2.setEnemy(units.get("dracula"));
 
-        // Setting the adjacent rooms for each Rooms
+        // Setting the adjacent rooms for each rooms
         hallwayOne.setAdjacentRoom(Direction.NORTH, hallwayTwo);
         hallwayOne_2.setAdjacentRoom(Direction.NORTH, hallwayTwo_2);
 
@@ -139,6 +145,7 @@ public class GameInitializer implements Initializer {
         mapTwoProgress.setRoomsOpened(secondProgress_m2);
         mapTwoProgress.setRoomsOpened(thirdProgress_m2);
 
+        //Sets up the game progress
         ArrayList<Room> openRooms = new ArrayList<>();
         ArrayList<Room> rooms = new ArrayList<>();
         Room heroLocation;
@@ -157,6 +164,7 @@ public class GameInitializer implements Initializer {
         openRooms.add(livingRoom);
         openRooms.add(servantQuarters);
 
+        //Creates a map instance of the first map
         heroLocation = hallwayOne;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
         mapOne = new GameMap(rooms, mapOneProgress.getOpenedRooms(0), heroLocation);
 
@@ -169,10 +177,15 @@ public class GameInitializer implements Initializer {
         openRooms_2.add(livingRoom_2);
         openRooms_2.add(servantQuarters_2);
 
+        //Creates a map instance of the second map
         heroLocation_2 = masterBedroom_2;
         mapTwo = new GameMap((ArrayList<Room>) rooms.clone(), mapTwoProgress.getOpenedRooms(0), heroLocation_2);
     }
 
+    /**
+     * Will setup the skills first then create the units and bind the skills for
+     * each unit.
+     */
     @Override
     public void setupUnits() {
 
@@ -334,6 +347,7 @@ public class GameInitializer implements Initializer {
         units.put("death", death);
     }
 
+    //Sets up the items in the game then saves it in an inventory named game inventory
     @Override
     public void setupItems() {
         Item commonSword = new EquippableItem.Builder("Common Sword")
@@ -388,6 +402,9 @@ public class GameInitializer implements Initializer {
         items.put("talisman", talisman);
     }
 
+    /**
+     * Sets up the game dialogue for each progress.
+     */
     @Override
     public void setupDialogue() {
         // Act 0

@@ -9,6 +9,12 @@ public class SoulSteal extends Skill {
         setName("Soul Steal");
     }
 
+    /**
+     * Deals 2 x the maximum damage of the user and heals the user
+     * for the same amount of the damage output.
+     * @param user
+     * @param victim
+     */
     @Override
     public void skillEffect(Unit user, Unit victim) {
         int damage = user.getDamage() * 2;
