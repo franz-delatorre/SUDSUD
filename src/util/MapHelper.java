@@ -10,15 +10,13 @@ import java.util.Map;
 
 public final class MapHelper {
 
-    private MapHelper(){
-
-    }
-
-    public boolean checkAdjacentRoom(Direction to, Room room) {
+    public static boolean checkAdjacentRoom(Direction to, Room room) {
         Map<Direction, Room> adjacentRoom = room.getAdjacentRoom();
         if (adjacentRoom.get(to) != null) {
             return true;
         }
         return false;
     }
+
+
 }

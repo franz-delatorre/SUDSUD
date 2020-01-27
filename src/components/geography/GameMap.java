@@ -1,14 +1,17 @@
 package components.geography;
 
 import components.geography.Room;
+import misc.Direction;
 
 import java.util.ArrayList;
 
 public class GameMap {
+    private ArrayList<Room> roomList;
     private ArrayList<Room> openRooms;
     private Room heroLocation;
 
-    public GameMap(ArrayList<Room> openRooms, Room heroLocation) {
+    public GameMap(ArrayList<Room> roomList, ArrayList<Room> openRooms, Room heroLocation) {
+        this.roomList = roomList;
         this.openRooms = openRooms;
         this.heroLocation = heroLocation;
     }
@@ -27,6 +30,10 @@ public class GameMap {
 
     public Room getHeroLocation() {
         return heroLocation;
+    }
+
+    public Room getBossRoom() {
+        return openRooms.get(openRooms.size() - 1);
     }
 
     /**
@@ -96,6 +103,12 @@ public class GameMap {
                 return true;
             }
         }
+        return false;
+    }
+
+    public  boolean canMoveToAdjacentRoom (Direction to, Room room) {
+        Room adjRm = room.getAdjacentRoom(to);
+        if (openRooms.contains(adjRm)) return true;
         return false;
     }
 }

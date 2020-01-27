@@ -5,11 +5,11 @@ import components.geography.Point;
 import components.geography.Room;
 import components.item.EquippableItem;
 import components.item.Item;
-import components.skill.Skill;
 import components.skill.list.*;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import components.unit.UnskilledUnit;
+import dialogue.Dialogue;
 import misc.Direction;
 
 import java.util.ArrayList;
@@ -17,27 +17,45 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class GameInitializer implements Initializer {
-    private ArrayList<Room> openRooms = new ArrayList<>();
-    private ArrayList<Room> rooms = new ArrayList<>();
-    private ArrayList<Unit> units = new ArrayList<>();
-    private Map<Skill, Skill> skills = new HashMap();
-    private ArrayList<Item> items = new ArrayList<>();
-    private GameMap map;
-    private Room heroLocation;
+    private Map<String, Unit> units = new HashMap<>();
+    private Map<String, Item> items = new HashMap<>();
+    private GameMap mapOne;
+    private GameMap mapTwo;
+    private SkilledUnit hero;
+    private Unit finalBoss;
+    private Progress mapOneProgress = new Progress();
+    private Progress mapTwoProgress = new Progress();
+    private Dialogue dialogue = new Dialogue();
 
-    public GameMap getGameMap() {
-        return map;
+    public Unit getFinalBoss() {
+        return finalBoss;
     }
 
-    public ArrayList<Room> getRooms() {
-        return rooms;
+    public SkilledUnit getHero() {
+        return hero;
     }
 
-    public ArrayList<Unit> getUnits() {
-        return units;
+    public Dialogue getDialogue() {
+        return dialogue;
     }
 
-    public ArrayList<Item> getItems() {
+    public Progress getMapOneProgress() {
+        return mapOneProgress;
+    }
+
+    public Progress getMapTwoProgress() {
+        return mapTwoProgress;
+    }
+
+    public GameMap getGameMapOne() {
+        return mapOne;
+    }
+
+    public GameMap getGameMapTwo() {
+        return mapTwo;
+    }
+
+    public Map<String, Item> getItems() {
         return items;
     }
 
@@ -45,10 +63,12 @@ public class GameInitializer implements Initializer {
         setupUnits();
         setupItems();
         setupRooms();
+        setupDialogue();
     }
 
     @Override
     public void setupRooms() {
+        // Rooms of the first map
         Room hallwayOne = new Room("Hallway One", new Point(0, -1));
         Room hallwayTwo = new Room("Hallway Two", new Point(0, 0));
         Room hallwayThree = new Room("Hallway Three", new Point(0, 1));
@@ -58,17 +78,70 @@ public class GameInitializer implements Initializer {
         Room kitchen = new Room("Kitchen", new Point(2, 0));
         Room masterBedroom = new Room("Master's Bedroom", new Point(0, 2));
 
+        // Rooms of the second map
+        Room hallwayOne_2 = hallwayOne.clone();
+        Room hallwayTwo_2 = hallwayTwo.clone();
+        Room hallwayThree_2 = hallwayThree.clone();
+        Room livingRoom_2 = livingRoom.clone();
+        Room servantQuarters_2 = servantQuarters.clone();
+        Room diningHall_2 = diningHall.clone();
+        Room kitchen_2 = kitchen.clone();
+        Room masterBedroom_2 = masterBedroom.clone();
+
+        // Setting the enemies in each rooms
+        livingRoom.setEnemy(units.get("banshee"));
+        servantQuarters.setEnemy(units.get("medusa"));
+        diningHall.setEnemy(units.get("imp"));
+        kitchen.setEnemy(units.get("casper"));
+        hallwayThree.setEnemy(units.get("vampire"));
+        masterBedroom.setEnemy(units.get("lilith"));
+
+        hallwayThree_2.setEnemy(units.get("warlock"));
+        livingRoom_2.setEnemy(units.get("werewolf"));
+        diningHall_2.setEnemy(units.get("minotaur"));
+        kitchen_2.setEnemy(units.get("priestess"));
+        servantQuarters_2.setEnemy(units.get("death"));
+        hallwayOne_2.setEnemy(units.get("dracula"));
+
+        // Setting the adjacent rooms for each Rooms
         hallwayOne.setAdjacentRoom(Direction.NORTH, hallwayTwo);
+        hallwayOne_2.setAdjacentRoom(Direction.NORTH, hallwayTwo_2);
 
         hallwayTwo.setAdjacentRoom(Direction.WEST, livingRoom);
         hallwayTwo.setAdjacentRoom(Direction.EAST, diningHall);
         hallwayTwo.setAdjacentRoom(Direction.NORTH, hallwayThree);
 
+        hallwayTwo_2.setAdjacentRoom(Direction.WEST, livingRoom_2);
+        hallwayTwo_2.setAdjacentRoom(Direction.EAST, diningHall_2);
+        hallwayTwo_2.setAdjacentRoom(Direction.NORTH, hallwayThree_2);
+
+        hallwayThree_2.setAdjacentRoom(Direction.NORTH, masterBedroom_2);
         hallwayThree.setAdjacentRoom(Direction.NORTH, masterBedroom);
 
         livingRoom.setAdjacentRoom(Direction.WEST, servantQuarters);
+        livingRoom_2.setAdjacentRoom(Direction.WEST, servantQuarters_2);
 
         diningHall.setAdjacentRoom(Direction.EAST, kitchen);
+        diningHall_2.setAdjacentRoom(Direction.EAST, kitchen_2);
+
+        //Setting up the two maps
+        Room[] firstProgress_m1 = new Room[] {hallwayOne, hallwayTwo, livingRoom, servantQuarters};
+        Room[] secondProgress_m1 = new Room[] {diningHall, kitchen};
+        Room[] thirdProgress_m1 = new Room[] {hallwayThree, masterBedroom};
+        mapOneProgress.setRoomsOpened(firstProgress_m1);
+        mapOneProgress.setRoomsOpened(secondProgress_m1);
+        mapOneProgress.setRoomsOpened(thirdProgress_m1);
+
+        Room[] firstProgress_m2 = new Room[] {masterBedroom_2, hallwayThree_2, hallwayTwo_2, diningHall_2, kitchen_2};
+        Room[] secondProgress_m2 = new Room[] {livingRoom_2, servantQuarters_2};
+        Room[] thirdProgress_m2 = new Room[] {hallwayOne_2};
+        mapTwoProgress.setRoomsOpened(firstProgress_m2);
+        mapTwoProgress.setRoomsOpened(secondProgress_m2);
+        mapTwoProgress.setRoomsOpened(thirdProgress_m2);
+
+        ArrayList<Room> openRooms = new ArrayList<>();
+        ArrayList<Room> rooms = new ArrayList<>();
+        Room heroLocation;
 
         rooms.add(hallwayOne);
         rooms.add(hallwayTwo);
@@ -84,8 +157,20 @@ public class GameInitializer implements Initializer {
         openRooms.add(livingRoom);
         openRooms.add(servantQuarters);
 
-        heroLocation = hallwayOne                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                ;
-        map = new GameMap(openRooms, heroLocation);
+        heroLocation = hallwayOne;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
+        mapOne = new GameMap(rooms, mapOneProgress.getOpenedRooms(0), heroLocation);
+
+        ArrayList<Room> openRooms_2 = new ArrayList<>();
+        Room heroLocation_2;
+
+        openRooms_2.add(masterBedroom_2);
+        openRooms_2.add(hallwayThree_2);
+        openRooms_2.add(hallwayTwo_2);
+        openRooms_2.add(livingRoom_2);
+        openRooms_2.add(servantQuarters_2);
+
+        heroLocation_2 = masterBedroom_2;
+        mapTwo = new GameMap((ArrayList<Room>) rooms.clone(), mapTwoProgress.getOpenedRooms(0), heroLocation_2);
     }
 
     @Override
@@ -112,13 +197,20 @@ public class GameInitializer implements Initializer {
                 .build();
 
         // == Construction of units ==
+
+        //Hero of the game
         SkilledUnit alucard = new SkilledUnit.Builder()
-                .damage(10)
-                .health(100)
                 .name("Alucard")
-                .lifesteal(7)
+                .health(1000)
+                .damage(1000)
+                .lifesteal(0)
+                .criticalChance(5)
+                .evasion(0)
                 .setSkill(soulSteal)
                 .build();
+        hero = alucard;
+
+        //All other units
         SkilledUnit dracula = new SkilledUnit.Builder()
                 .damage(65).health(700)
                 .name("Vlad the Impaler")
@@ -127,6 +219,8 @@ public class GameInitializer implements Initializer {
                 .lifesteal(25)
                 .setSkill(chaosStrike)
                 .build();
+        finalBoss = dracula;
+
         SkilledUnit warlock = new SkilledUnit.Builder()
                 .damage(25)
                 .health(200)
@@ -137,7 +231,8 @@ public class GameInitializer implements Initializer {
                 .setSkill(heal)
                 .build();
         SkilledUnit werewolf = new SkilledUnit.Builder()
-                .damage(40).health(250)
+                .damage(40)
+                .health(250)
                 .name("Werewolf")
                 .evasion(10)
                 .criticalChance(10)
@@ -195,6 +290,15 @@ public class GameInitializer implements Initializer {
                 .lifesteal(10)
                 .setSkill(chaosStrike)
                 .build();
+        SkilledUnit death = new SkilledUnit.Builder()
+                .damage(50)
+                .health(440)
+                .name("Jack D' Reaper")
+                .evasion(10)
+                .criticalChance(25)
+                .lifesteal(10)
+                .setSkill(chaosStrike)
+                .build();
         UnskilledUnit banshee = new UnskilledUnit.Builder()
                 .damage(8)
                 .health(80)
@@ -213,6 +317,21 @@ public class GameInitializer implements Initializer {
                 .name("Vampire")
                 .lifesteal(10)
                 .build();
+
+        // Adding the units in a hashmap
+        units.put("dracula", dracula);
+        units.put("warlock", warlock);
+        units.put("werewolf", werewolf);
+        units.put("minotaur", minotaur);
+        units.put("medusa", medusa);
+        units.put("casper", casper);
+        units.put("lilith", lilith);
+        units.put("general", general);
+        units.put("priestess", priestess);
+        units.put("banshee", banshee);
+        units.put("imp", imp);
+        units.put("vampire", vampire);
+        units.put("death", death);
     }
 
     @Override
@@ -220,31 +339,26 @@ public class GameInitializer implements Initializer {
         Item commonSword = new EquippableItem.Builder("Common Sword")
                 .damage(10)
                 .build();
-
         Item rareSword = new EquippableItem.Builder("Rare Sword")
                 .damage(25)
                 .health(50)
                 .criticalChance(5)
                 .build();
-
         Item rapier = new EquippableItem.Builder("Rapier")
                 .damage(150)
                 .criticalChance(25)
                 .lifesteal(25)
                 .evasion(10)
                 .build();
-
         Item chainMail = new EquippableItem.Builder("Chain Mail")
                 .health(30)
                 .build();
-
         Item breastPlate = new EquippableItem.Builder("Breast Plate")
                 .health(80)
                 .damage(15)
                 .evasion(5)
                 .lifesteal(5)
                 .build();
-
         Item kevlar = new EquippableItem.Builder("Kevlar")
                 .health(200)
                 .evasion(15)
@@ -252,7 +366,6 @@ public class GameInitializer implements Initializer {
                 .lifesteal(5)
                 .damage(50)
                 .build();
-
         Item redMoon = new EquippableItem.Builder("Red Moon")
                 .health(40)
                 .damage(5)
@@ -260,20 +373,42 @@ public class GameInitializer implements Initializer {
                 .criticalChance(5)
                 .lifesteal(10)
                 .build();
-
-        Item Talisman = new EquippableItem.Builder("Vampire's Talisman")
+        Item talisman = new EquippableItem.Builder("Vampire's Talisman")
                 .health(10)
                 .lifesteal(25)
                 .build();
 
-        items.add(commonSword);
-        items.add(rareSword);
-        items.add(rapier);
-        items.add(chainMail);
-        items.add(breastPlate);
-        items.add(kevlar);
-        items.add(redMoon);
-        items.add(Talisman);
+        items.put("commonSword", commonSword);
+        items.put("rareSword", rareSword);
+        items.put("rapier", rapier);
+        items.put("chainMail", chainMail);
+        items.put("breastPlate", breastPlate);
+        items.put("kevlar", kevlar);
+        items.put("redMoon", redMoon);
+        items.put("talisman", talisman);
     }
 
+    @Override
+    public void setupDialogue() {
+        // Act 0
+        String[] actZero = new String[] {
+                "Welcome to Castlevania. Let's inspect the map to know where you are at.",
+                "Please press m."
+        };
+
+        String[] actOne = new String[] {
+                "Look there's an item on the floor. Let's pick it up.",
+                "You found: Common Sword"
+        };
+
+        String[] actTwo = new String[] {
+                "Prepare for battle, there's an enemy up ahead.",
+                "Ganbatte!"
+        };
+
+        dialogue.addDialogue(actZero);
+        dialogue.addDialogue(actOne);
+        dialogue.addDialogue(actTwo);
+
+    }
 }

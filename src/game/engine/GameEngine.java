@@ -12,7 +12,8 @@ public class GameEngine implements GameCycle {
     @Override
     public void start() {
         while (!gameManager.gameIsOver()) {
-            gameManager.initialize();
+            gameManager.start();
         }
+        System.out.println("You Completed all levels congratulations");
     }
 }

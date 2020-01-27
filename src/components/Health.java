@@ -1,5 +1,7 @@
 package components;
 
+import java.security.PublicKey;
+
 public class Health {
     private int maxHealth;
     private int currentHealth;
@@ -17,11 +19,19 @@ public class Health {
         this.maxHealth = maxHealth;
     }
 
+    public void takeDamage(int damage) {
+        currentHealth -= damage;
+    }
+
     public int getCurrentHealth() {
         return currentHealth;
     }
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
+    }
+
+    public Health clone() {
+        return new Health(maxHealth);
     }
 }

@@ -9,6 +9,7 @@ public abstract class Unit {
     private Health health;
     private int damage;
     private Stats unitStats;
+    private boolean isAlive;
 
     abstract static class Builder<T extends Builder<T>>{
         private String name;
@@ -56,10 +57,11 @@ public abstract class Unit {
     }
 
     Unit(Builder<?> builder) {
-        name      = builder.name;
-        health    = builder.health;
-        damage    = builder.damage;
+        name = builder.name;
+        health = builder.health;
+        damage = builder.damage;
         unitStats = builder.unitStats;
+        isAlive = true;
     }
 
     /**
@@ -69,6 +71,18 @@ public abstract class Unit {
     public int getMinDamage() {
         double minDamage = this.damage * .9;
         return (int) minDamage;
+    }
+
+    public void takeDamage(int damage) {
+        health.takeDamage(damage);
+    }
+
+    public void setIsAlive(boolean bool) {
+        isAlive = bool;
+    }
+
+    public boolean isAlive() {
+        return isAlive;
     }
 
     public Stats getUnitStats() {
@@ -89,5 +103,13 @@ public abstract class Unit {
 
     public void setDamage(int damage) {
         this.damage = damage;
+    }
+
+    public int getCurrentHealth() {
+        return health.getCurrentHealth();
+    }
+
+    public int getMaxHealth() {
+        return health.getMaxHealth();
     }
 }
