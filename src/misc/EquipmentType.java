@@ -1,7 +1,22 @@
 package misc;
 
 public enum EquipmentType {
-    WEAPON,
-    ARMOR,
-    AMULET;
+    WEAPON {
+        @Override
+        public String toString() {
+            return "Weapon";
+        }
+    },
+    ARMOR {
+        @Override
+        public String toString() {
+            return "Armor";
+        }
+    },
+    AMULET {
+        @Override
+        public String toString() {
+            return "Amulet";
+        }
+    };
 }

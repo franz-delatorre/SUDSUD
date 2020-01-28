@@ -4,6 +4,7 @@ import components.geography.GameMap;
 import components.geography.Point;
 import components.geography.Room;
 import components.item.EquippableItem;
+import components.item.Inventory;
 import components.item.Item;
 import components.skill.list.*;
 import components.unit.SkilledUnit;
@@ -19,14 +20,15 @@ import java.util.Map;
 import java.util.zip.Adler32;
 
 public class GameInitializer implements Initializer {
+    private Dialogue dialogue = new Dialogue();
     private Map<String, Unit> units = new HashMap<>();
     private Map<String, Item> items = new HashMap<>();
     private GameMap gameMap;
+    private GameMapProgress gameMapProgress = new GameMapProgress();
+    private Inventory gameInventory = new Inventory();
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
-    private GameMapProgress gameMapProgress = new GameMapProgress();
-    private Dialogue dialogue = new Dialogue();
 
     public Unit getFinalBoss() {
         return finalBoss;
@@ -52,8 +54,8 @@ public class GameInitializer implements Initializer {
         return dialogue;
     }
 
-    public Map<String, Item> getItems() {
-        return items;
+    public Inventory getItems() {
+        return gameInventory;
     }
 
     public void initialize() {
@@ -90,6 +92,15 @@ public class GameInitializer implements Initializer {
         Room diningHall_2 = diningHall.clone();
         Room kitchen_2 = kitchen.clone();
         Room masterBedroom_2 = masterBedroom.clone();
+
+        // Setting the items inside some rooms
+        hallwayTwo.setItem(items.get("commonSword"));
+        livingRoom.setItem(items.get("redMoon"));
+        kitchen.setItem(items.get("chainMail"));
+        masterBedroom.setItem(items.get("rareSword"));
+        kitchen_2.setItem(items.get("kevlar"));
+        livingRoom_2.setItem(items.get("talisman"));
+        servantQuarters_2.setItem(items.get("rapier"));
 
         // Setting the enemies in each rooms
         livingRoom.setEnemy(units.get("banshee"));
@@ -334,48 +345,56 @@ public class GameInitializer implements Initializer {
         units.put("death", death);
     }
 
-    //Sets up the items in the game then saves it in an inventory named game inventory
+    //Sets up the items in the game then saves it in an inventory named gameInventory
     @Override
     public void setupItems() {
-        Item commonSword = new EquippableItem.Builder("Common Sword")
+        Item commonSword = new EquippableItem.Builder()
+                .name("Common Sword")
                 .damage(10)
                 .build();
-        Item rareSword = new EquippableItem.Builder("Rare Sword")
+        Item rareSword = new EquippableItem.Builder()
+                .name("Rare Sword")
                 .damage(25)
-                .health(50)
+                .healthBoost(50)
                 .criticalChance(5)
                 .build();
-        Item rapier = new EquippableItem.Builder("Rapier")
+        Item rapier = new EquippableItem.Builder()
+                .name("Rapier")
                 .damage(150)
                 .criticalChance(25)
                 .lifesteal(25)
                 .evasion(10)
                 .build();
-        Item chainMail = new EquippableItem.Builder("Chain Mail")
-                .health(30)
+        Item chainMail = new EquippableItem.Builder()
+                .name("Chain Mail")
+                .healthBoost(30)
                 .build();
-        Item breastPlate = new EquippableItem.Builder("Breast Plate")
-                .health(80)
+        Item breastPlate = new EquippableItem.Builder()
+                .name("Breast Plate")
+                .healthBoost(80)
                 .damage(15)
                 .evasion(5)
                 .lifesteal(5)
                 .build();
-        Item kevlar = new EquippableItem.Builder("Kevlar")
-                .health(200)
+        Item kevlar = new EquippableItem.Builder()
+                .name("Kevlar")
+                .healthBoost(200)
                 .evasion(15)
                 .criticalChance(10)
                 .lifesteal(5)
                 .damage(50)
                 .build();
-        Item redMoon = new EquippableItem.Builder("Red Moon")
-                .health(40)
+        Item redMoon = new EquippableItem.Builder()
+                .name("Red Moon")
+                .healthBoost(40)
                 .damage(5)
                 .evasion(5)
                 .criticalChance(5)
                 .lifesteal(10)
                 .build();
-        Item talisman = new EquippableItem.Builder("Vampire's Talisman")
-                .health(10)
+        Item talisman = new EquippableItem.Builder()
+                .name("Vampire's Talisman")
+                .healthBoost(10)
                 .lifesteal(25)
                 .build();
 
@@ -387,6 +406,15 @@ public class GameInitializer implements Initializer {
         items.put("kevlar", kevlar);
         items.put("redMoon", redMoon);
         items.put("talisman", talisman);
+
+        gameInventory.addItem(commonSword);
+        gameInventory.addItem(rareSword);
+        gameInventory.addItem(rapier);
+        gameInventory.addItem(chainMail);
+        gameInventory.addItem(breastPlate);
+        gameInventory.addItem(kevlar);
+        gameInventory.addItem(redMoon);
+        gameInventory.addItem(talisman);
     }
 
     /**

@@ -6,12 +6,14 @@ import misc.StatType;
 
 public abstract class Item {
     private String name;
+    private String description;
     private Stats itemStats;
     private int healthBoost;
     private int damage;
 
     public static abstract class Builder<T> {
         private String name;
+        private String description;
         private Stats itemStats;
         private int healthBoost;
         private int damage;
@@ -20,6 +22,11 @@ public abstract class Item {
             itemStats = new Stats();
             damage = 0;
             healthBoost = 0;
+        }
+
+        public T description(String desc) {
+            this.description = desc;
+            return self();
         }
 
         public T healthBoost(int value) {
@@ -38,7 +45,7 @@ public abstract class Item {
         }
 
         public T criticalChance(int value) {
-            itemStats.increaseStat(StatType.EVASION, value);
+            itemStats.increaseStat(StatType.CRITICAL_CHANCE, value);
             return self();
         }
 
@@ -66,6 +73,14 @@ public abstract class Item {
 
     public Stats getItemStats() {
         return itemStats;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getDescription() {
+        return description;
     }
 
     protected void setName(String name) {

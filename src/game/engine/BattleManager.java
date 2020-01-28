@@ -4,7 +4,6 @@ import components.Stats;
 import components.skill.Skill;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
-import components.unit.UnskilledUnit;
 import misc.StatType;
 import misc.TextColor;
 import util.DamageHelper;
@@ -13,7 +12,6 @@ import util.SkillHelper;
 import util.Sleep;
 
 import java.util.Scanner;
-import java.util.concurrent.BlockingDeque;
 
 public class BattleManager {
     private static final Scanner scanner = new Scanner(System.in);
@@ -47,8 +45,8 @@ public class BattleManager {
 
         int turn = 1;
         while (fightersStillAlive()) {
-            System.out.println("__________________________________");
             Sleep.sleep(1);
+            System.out.println("__________________________________");
             printHealth();
             printCooldown();
             battleIO();
@@ -63,6 +61,7 @@ public class BattleManager {
             decrementCooldown();
             System.out.println(BLUE + " - END OF TURN " + turn++ + " - " + BLACK);
             System.out.println("__________________________________");
+            Sleep.sleep(1);
         }
         return winner();
     }
@@ -177,6 +176,7 @@ public class BattleManager {
      * @param victim
      */
     private void normalAttack(Unit attacker, Unit victim) {
+        System.out.println(attacker.getName() + " used normal attack");
 
         Sleep.sleep(1);
         //Will return if the attacker can evade the attack
@@ -185,7 +185,6 @@ public class BattleManager {
             return;
         }
 
-        System.out.println(attacker.getName() + " used normal attack");
         int damage = DamageHelper.damageOutput(attacker.getMinDamage(), attacker.getDamage());
         //Sets the damage to 2x the damage dealth if the attacker can crit
         if (canCrit(attacker.getUnitStats())) {

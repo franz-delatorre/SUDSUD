@@ -3,20 +3,20 @@ package game.engine;
 import components.Stats;
 import components.geography.GameMap;
 import components.geography.Room;
+import components.item.EquippableItem;
 import components.item.Inventory;
 import components.item.Item;
+import components.item.UnitEquipment;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import dialogue.Dialogue;
-import misc.Broadcaster;
-import misc.Direction;
-import misc.StatType;
-import misc.TextColor;
+import misc.*;
+import util.Sleep;
+import util.StatHelper;
 
-import javax.swing.*;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.logging.Logger;
 
 public class GameManager {
 
@@ -35,11 +35,12 @@ public class GameManager {
     private GameMap map;
     private GameMapProgress gameMapProgress;
     private Inventory heroInventory;
-    private Map<String, Item> gameInventory;
+    private Inventory gameInventory;
     private Room previousRoom;
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
+    private UnitEquipment equipment;
 
     public GameManager() {
         GameInitializer gi = new GameInitializer();
@@ -56,6 +57,7 @@ public class GameManager {
         map = gi.getGameMap();
         progress = 0;
         secondLocation = gi.getSecondLocation();
+        equipment = new UnitEquipment();
     }
 
     /**
@@ -84,6 +86,7 @@ public class GameManager {
 
         switch (opt) {
             case "i":
+                openInventory();
                 break;
             case "m":
                 map.showMap();
@@ -135,13 +138,6 @@ public class GameManager {
                 System.out.println("Wrong input, try again");
                 move();
         }
-        checkRoomForEnemy();
-        map.showMap();
-        if (!finalBoss.isAlive()) {
-            gameOver = true;
-            return;
-        }
-        move();
     }
 
     /**
@@ -154,6 +150,14 @@ public class GameManager {
         if (map.canMoveToAdjacentRoom(to, rm)) {
             map.setHeroLocation(rm.getAdjacentRoom(to));
             previousRoom = rm;
+
+            checkRoomVariables();
+            map.showMap();
+            if (!finalBoss.isAlive()) {
+                gameOver = true;
+                return;
+            }
+            move();
         }
         else {
             System.out.println("Wrong input, try again");
@@ -165,32 +169,12 @@ public class GameManager {
      * Checks if the room has an enemy. If the enemy is alive it will
      * simulate a battle between the hero and the enemy. If the player is defeated
      * he will choose to fight again or not. If the player will not fight on then he
-     * will be moved back to the last room he went to.
+     * will be moved back to the last room he went to. Also checks the room if there
+     * is an item to be picked up when: the enemy is slain, player is in the room.
      */
-    private void checkRoomForEnemy() {
-        Room room = map.getHeroLocation();
-        Unit enemy = room.getEnemy();
-        // Checks if the room has an enemy
-        if (enemy == null) return;
-
-        //Checks if the enemy is still alive
-        if (enemy.isAlive()) {
-            bm.setEnemy(enemy);
-
-            //Will check who wins the battle. returns 1 if the player wins and
-            // returns zero if otherwise.
-            if (bm.toBattle() > 0) {
-                System.out.println("You have slain " + GREEN + enemy.getName() + BLACK);
-                checkBossIsAlive();
-            } else {
-                System.out.println(RED + enemy.getName() + " has slain you" + BLACK);
-                if (fightAgain()) {
-                    checkRoomForEnemy();
-                } else {
-                    map.setHeroLocation(previousRoom);
-                }
-            }
-        }
+    private void checkRoomVariables() {
+        checkForEnemy();
+        checkForItem();
     }
 
     public boolean gameIsOver() {
@@ -257,7 +241,7 @@ public class GameManager {
     private void showCharacter() {
         System.out.println("==== "+ hero.getName() +" ====");
         System.out.println("Health: " + hero.getHealth().getMaxHealth());
-        System.out.println("Damage: " + hero.getMinDamage() + "-" + hero.getMaxHealth());
+        System.out.println("Damage: " + hero.getMinDamage() + "-" + hero.getDamage());
         System.out.println("Skill: " + hero.getSkill().getName());
         System.out.println();
         System.out.println("\t~~~Stats~~~");
@@ -266,5 +250,151 @@ public class GameManager {
             System.out.println(statType.toString() + ": " + stats.getStatValue(statType));
         }
         System.out.printf("\n");
+    }
+
+    private void showInventory() {
+        int index = 1;
+        System.out.println("Inventory");
+        for (Item item: heroInventory.getInventory()) {
+            System.out.println(index + ".) " + heroInventory.getItem(index).getName());
+        }
+
+        System.out.println("===========================\n");
+        for (EquipmentType equipmentType: EquipmentType.values()) {
+            Item item = equipment.getItem(equipmentType);
+            System.out.println(equipmentType.toString() + ": ");
+            if (item != null) {
+                System.out.printf(item.getName());
+            } else {
+
+            }
+        }
+    }
+
+    private void checkForItem() {
+        Room room = map.getHeroLocation();
+        Item item = room.getItem();
+
+        if (heroInventory.contains(item)) return;
+
+        if (gameInventory.contains(item)) {
+            heroInventory.addItem(item);
+        }
+
+        Sleep.sleep(1);
+        System.out.println("\nYou Found an item");
+        Sleep.sleep(1);
+        System.out.println(item.getName() + " is added in your inventory");
+        Sleep.sleep(1);
+        System.out.println();
+    }
+
+    private void checkForEnemy() {
+        Room room = map.getHeroLocation();
+        Unit enemy = room.getEnemy();
+        // Checks if the room has an enemy
+        if (enemy == null) {
+            checkForItem();
+            return;
+        }
+
+        //Checks if the enemy is still alive
+        if (enemy.isAlive()) {
+            bm.setEnemy(enemy);
+
+            //Will check who wins the battle. returns 1 if the player wins and
+            // returns zero if otherwise.
+            if (bm.toBattle() > 0) {
+                System.out.println("You have slain " + GREEN + enemy.getName() + BLACK);
+                checkBossIsAlive();
+            } else {
+                System.out.println(RED + enemy.getName() + " has slain you" + BLACK);
+                if (fightAgain()) {
+                    checkRoomVariables();
+                } else {
+                    map.setHeroLocation(previousRoom);
+                }
+            }
+        }
+    }
+
+    private void openInventory() {
+        showInventory();
+        System.out.println("[e] Exit");
+        System.out.println("[i] Inspect Item");
+        System.out.println("[u] Equip Item");
+
+        Scanner sc = new Scanner(System.in);
+
+        switch (sc.nextLine().toLowerCase()) {
+            case "e":
+                return;
+            case "i":
+                System.out.println("Item no.:");
+                inspectItem(sc.nextInt());
+                break;
+            case "u":
+                System.out.println("Item no.:");
+                useItem(sc.nextInt());
+                break;
+            default:
+                System.out.println("Invalid input, try again.");
+                openInventory();
+        }
+    }
+
+    private void inspectItem(int index) {
+        Item item = heroInventory.getItem(index);
+        System.out.println(item.getDescription());
+        System.out.println("Use Item?");
+        System.out.println("[y] Yes");
+        System.out.println("[e] Back to Inventory");
+
+        Scanner sc = new Scanner(System.in);
+        String opt = sc.nextLine().toLowerCase();
+
+        switch (opt) {
+            case "y":
+                System.out.println("FGJKSAHFKJAHSFKHASJKFHASJKFKJASF");
+                useItem(index);
+                showInventory();
+                break;
+            default:
+                inspectItem(index);
+        }
+    }
+
+    private void useItem(int index) {
+
+        Item item = heroInventory.getItem(index);
+        EquipmentType type = ((EquippableItem) item).getEquipmentType();
+        Stats heroStats = hero.getUnitStats();
+        Stats itemStats = item.getItemStats();
+
+        if (equipment.getItem(type) == null) {
+            System.out.println("ajklskflkasjfj");
+            StatHelper.increaseStats(heroStats, itemStats);
+        } else {
+            Item prevItem = equipment.getItem(type);
+            StatHelper.decreaseStats(heroStats, prevItem.getItemStats());
+            StatHelper.increaseStats(heroStats, itemStats);
+        }
+        EquippableItem it = (EquippableItem) item;
+        equipment.equipItem(it);
+    }
+
+    private void equipItem(EquippableItem item) {
+        Item i = equipment.getItem(item.getEquipmentType());
+        Stats unitStats = hero.getUnitStats();
+        Stats itemStats = item.getItemStats();
+        if (i == null) {
+            StatHelper.increaseStats(unitStats, itemStats);
+            equipment.equipItem(item);
+            return;
+        }
+
+        StatHelper.decreaseStats(unitStats, itemStats);
+        StatHelper.increaseStats(unitStats, i.getItemStats());
+        equipment.equipItem(item);
     }
 }
