@@ -13,22 +13,35 @@ import dialogue.Dialogue;
 import misc.Direction;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.Adler32;
 
 public class GameInitializer implements Initializer {
     private Map<String, Unit> units = new HashMap<>();
     private Map<String, Item> items = new HashMap<>();
-    private GameMap mapOne;
-    private GameMap mapTwo;
+    private GameMap gameMap;
+    private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
-    private Progress mapOneProgress = new Progress();
-    private Progress mapTwoProgress = new Progress();
+    private GameMapProgress gameMapProgress = new GameMapProgress();
     private Dialogue dialogue = new Dialogue();
 
     public Unit getFinalBoss() {
         return finalBoss;
+    }
+
+    public Room getSecondLocation() {
+        return secondLocation;
+    }
+
+    public GameMap getGameMap() {
+        return gameMap;
+    }
+
+    public GameMapProgress getGameMapProgress() {
+        return gameMapProgress;
     }
 
     public SkilledUnit getHero() {
@@ -37,22 +50,6 @@ public class GameInitializer implements Initializer {
 
     public Dialogue getDialogue() {
         return dialogue;
-    }
-
-    public Progress getMapOneProgress() {
-        return mapOneProgress;
-    }
-
-    public Progress getMapTwoProgress() {
-        return mapTwoProgress;
-    }
-
-    public GameMap getGameMapOne() {
-        return mapOne;
-    }
-
-    public GameMap getGameMapTwo() {
-        return mapTwo;
     }
 
     public Map<String, Item> getItems() {
@@ -130,56 +127,44 @@ public class GameInitializer implements Initializer {
         diningHall.setAdjacentRoom(Direction.EAST, kitchen);
         diningHall_2.setAdjacentRoom(Direction.EAST, kitchen_2);
 
-        //Setting up the two maps
-        Room[] firstProgress_m1 = new Room[] {hallwayOne, hallwayTwo, livingRoom, servantQuarters};
-        Room[] secondProgress_m1 = new Room[] {diningHall, kitchen};
-        Room[] thirdProgress_m1 = new Room[] {hallwayThree, masterBedroom};
-        mapOneProgress.setRoomsOpened(firstProgress_m1);
-        mapOneProgress.setRoomsOpened(secondProgress_m1);
-        mapOneProgress.setRoomsOpened(thirdProgress_m1);
+        //Sets the opened rooms for each progress in the game.
+        ArrayList<Room> progressOne = new ArrayList<>();
+        progressOne.add(hallwayOne);
+        progressOne.add(hallwayTwo);
+        progressOne.add(livingRoom);
+        progressOne.add(servantQuarters);
 
-        Room[] firstProgress_m2 = new Room[] {masterBedroom_2, hallwayThree_2, hallwayTwo_2, diningHall_2, kitchen_2};
-        Room[] secondProgress_m2 = new Room[] {livingRoom_2, servantQuarters_2};
-        Room[] thirdProgress_m2 = new Room[] {hallwayOne_2};
-        mapTwoProgress.setRoomsOpened(firstProgress_m2);
-        mapTwoProgress.setRoomsOpened(secondProgress_m2);
-        mapTwoProgress.setRoomsOpened(thirdProgress_m2);
+        ArrayList<Room> progressTwo = new ArrayList<>(progressOne);
+        progressTwo.add(diningHall);
+        progressTwo.add(kitchen);
 
-        //Sets up the game progress
-        ArrayList<Room> openRooms = new ArrayList<>();
-        ArrayList<Room> rooms = new ArrayList<>();
-        Room heroLocation;
+        ArrayList<Room> progressThree = new ArrayList<>(progressTwo);
+        progressThree.add(hallwayThree);
+        progressThree.add(masterBedroom);
 
-        rooms.add(hallwayOne);
-        rooms.add(hallwayTwo);
-        rooms.add(hallwayThree);
-        rooms.add(livingRoom);
-        rooms.add(servantQuarters);
-        rooms.add(diningHall);
-        rooms.add(kitchen);
-        rooms.add(masterBedroom);
+        ArrayList<Room> progressFour = new ArrayList<>();
+        progressFour.add(masterBedroom_2);
+        progressFour.add(hallwayThree_2);
+        progressFour.add(hallwayTwo_2);
+        progressFour.add(livingRoom_2);
+        progressFour.add(servantQuarters_2);
 
-        openRooms.add(hallwayOne);
-        openRooms.add(hallwayTwo);
-        openRooms.add(livingRoom);
-        openRooms.add(servantQuarters);
+        ArrayList<Room> progressFive = new ArrayList<>(progressFour);
+        progressFive.add(diningHall_2);
+        progressFive.add(kitchen_2);
 
-        //Creates a map instance of the first map
-        heroLocation = hallwayOne;                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            ;
-        mapOne = new GameMap(rooms, mapOneProgress.getOpenedRooms(0), heroLocation);
+        ArrayList<Room> progressSix = new ArrayList<>(progressFive);
+        progressSix.add(hallwayOne_2);
 
-        ArrayList<Room> openRooms_2 = new ArrayList<>();
-        Room heroLocation_2;
+        gameMapProgress.addRoomsOpened(progressOne);
+        gameMapProgress.addRoomsOpened(progressTwo);
+        gameMapProgress.addRoomsOpened(progressThree);
+        gameMapProgress.addRoomsOpened(progressFour);
+        gameMapProgress.addRoomsOpened(progressFive);
+        gameMapProgress.addRoomsOpened(progressSix);
 
-        openRooms_2.add(masterBedroom_2);
-        openRooms_2.add(hallwayThree_2);
-        openRooms_2.add(hallwayTwo_2);
-        openRooms_2.add(livingRoom_2);
-        openRooms_2.add(servantQuarters_2);
-
-        //Creates a map instance of the second map
-        heroLocation_2 = masterBedroom_2;
-        mapTwo = new GameMap((ArrayList<Room>) rooms.clone(), mapTwoProgress.getOpenedRooms(0), heroLocation_2);
+        gameMap = new GameMap(gameMapProgress.getOpenedRooms(0), hallwayOne);
+        secondLocation = masterBedroom_2;
     }
 
     /**
@@ -208,6 +193,8 @@ public class GameInitializer implements Initializer {
                 .lifesteal(10)
                 .duration(5)
                 .build();
+        heal.setHeal(60);
+        lesserHeal.setHeal(30);
 
         // == Construction of units ==
 
@@ -215,7 +202,7 @@ public class GameInitializer implements Initializer {
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
                 .health(1000)
-                .damage(1000)
+                .damage(10)
                 .lifesteal(0)
                 .criticalChance(5)
                 .evasion(0)

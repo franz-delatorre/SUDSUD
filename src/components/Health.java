@@ -20,6 +20,11 @@ public class Health {
     }
 
     public void takeDamage(int damage) {
+        if (currentHealth - damage < 0) {
+            currentHealth = 0;
+            return;
+        }
+
         currentHealth -= damage;
     }
 

@@ -3,6 +3,7 @@ package components.skill.list;
 import components.Health;
 import components.skill.Skill;
 import components.unit.Unit;
+import misc.Broadcaster;
 
 public class DamageSkill extends Skill {
     private int damage;
@@ -31,5 +32,6 @@ public class DamageSkill extends Skill {
         Health victimHealth  = victim.getHealth();
         int victimCurrHealth = victimHealth.getCurrentHealth();
         victimHealth.setCurrentHealth(victimCurrHealth - this.damage);
+        Broadcaster.relayDamage(damage);
     }
 }

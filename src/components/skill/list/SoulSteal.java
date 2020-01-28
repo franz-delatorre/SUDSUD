@@ -2,6 +2,7 @@ package components.skill.list;
 
 import components.skill.Skill;
 import components.unit.Unit;
+import misc.Broadcaster;
 import util.HealthHelper;
 
 public class SoulSteal extends Skill {
@@ -21,5 +22,6 @@ public class SoulSteal extends Skill {
 
         HealthHelper.takeDamage(victim.getHealth(), damage);
         HealthHelper.heal(user.getHealth(), damage);
+        Broadcaster.relayDamage(damage);
     }
 }

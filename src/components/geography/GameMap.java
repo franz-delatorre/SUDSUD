@@ -6,18 +6,20 @@ import misc.Direction;
 import java.util.ArrayList;
 
 public class GameMap {
-    private ArrayList<Room> roomList;
     private ArrayList<Room> openRooms;
     private Room heroLocation;
 
-    public GameMap(ArrayList<Room> roomList, ArrayList<Room> openRooms, Room heroLocation) {
-        this.roomList = roomList;
+    public GameMap(ArrayList<Room> openRooms, Room heroLocation) {
         this.openRooms = openRooms;
         this.heroLocation = heroLocation;
     }
 
     public void setHeroLocation(Room heroLocation) {
         this.heroLocation = heroLocation;
+    }
+
+    public void setGameMap(ArrayList<Room> newRoom) {
+        openRooms = newRoom;
     }
 
     public void addOpenRoom(Room room) {
@@ -73,6 +75,7 @@ public class GameMap {
             }
             System.out.println("\n");
         }
+        System.out.println("      ==" + heroLocation.getName() +"==      ");
         System.out.println("=================================");
     }
 

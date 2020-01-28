@@ -14,6 +14,5 @@ public class GameEngine implements GameCycle {
         while (!gameManager.gameIsOver()) {
             gameManager.start();
         }
-        System.out.println("You Completed all levels congratulations");
     }
 }

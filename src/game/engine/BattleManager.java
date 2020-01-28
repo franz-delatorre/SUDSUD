@@ -4,15 +4,25 @@ import components.Stats;
 import components.skill.Skill;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
+import components.unit.UnskilledUnit;
 import misc.StatType;
+import misc.TextColor;
 import util.DamageHelper;
 import util.RandomGenerator;
 import util.SkillHelper;
+import util.Sleep;
 
 import java.util.Scanner;
+import java.util.concurrent.BlockingDeque;
 
 public class BattleManager {
     private static final Scanner scanner = new Scanner(System.in);
+    private static final String BLACK = TextColor.ANSI_BLACK;
+    private static final String CYAN = TextColor.ANSI_CYAN;
+    private static final String RED = TextColor.ANSI_RED;
+    private static final String PURPLE = TextColor.ANSI_PURPLE;
+    private static final String BLUE = TextColor.ANSI_BLUE;
+    private static final String GREEN = TextColor.ANSI_GREEN;
 
     private SkilledUnit hero;
     private Unit enemy;
@@ -34,12 +44,25 @@ public class BattleManager {
     public int toBattle() {
         setHealth();
         setCooldown();
+
+        int turn = 1;
         while (fightersStillAlive()) {
+            System.out.println("__________________________________");
+            Sleep.sleep(1);
             printHealth();
+            printCooldown();
             battleIO();
+            Sleep.sleep(1);
+            printHealth();
+            Sleep.sleep(2);
+            if (!fightersStillAlive()) break;
+            System.out.println();
             enemyAI();
-            setCooldown();
+            Sleep.sleep(1);
+            printHealth();
             decrementCooldown();
+            System.out.println(BLUE + " - END OF TURN " + turn++ + " - " + BLACK);
+            System.out.println("__________________________________");
         }
         return winner();
     }
@@ -49,10 +72,10 @@ public class BattleManager {
      */
     private void decrementCooldown() {
         Skill heroSkill = hero.getSkill();
-        heroSkill.setCooldown(heroSkill.getCooldown() - 1);
+        if (heroSkill.getCooldown() > 0) heroSkill.setCooldown(heroSkill.getCooldown() - 1);
         if (enemy.getClass() == SkilledUnit.class) {
             Skill enemySkill = ((SkilledUnit) enemy).getSkill();
-            enemySkill.setCooldown(enemySkill.getCooldown() - 1);
+            if (enemySkill.getCooldown() > 0) enemySkill.setCooldown(enemySkill.getCooldown() - 1);
         }
     }
 
@@ -61,7 +84,7 @@ public class BattleManager {
      */
     private void setCooldown() {
         hero.getSkill().setCooldown(3);
-        if (enemy.getClass() == SkilledUnit.class) hero.getSkill().setCooldown(3);
+        if (enemy.getClass() == SkilledUnit.class) ((SkilledUnit) enemy).getSkill().setCooldown(3);
     }
 
     /**
@@ -82,7 +105,7 @@ public class BattleManager {
                 break;
             case "s":
                 if (hero.getSkill().getCooldown() <= 0) {
-                    SkillHelper.useSkill(hero, enemy);
+                    useSkill(hero, enemy);
                 } else {
                     System.out.println("Wrong input try again.");
                     battleIO();
@@ -94,13 +117,26 @@ public class BattleManager {
         }
     }
 
+    private void useSkill(SkilledUnit user, Unit victim) {
+        Skill skill = user.getSkill();
+        System.out.println(CYAN + user.getName() + " used " + skill.getName() + BLACK);
+        SkillHelper.useSkill(user, victim);
+    }
+
     /**
      * Prints both units current health and max health
      */
     private void printHealth() {
         System.out.println(hero.getName() + " \t\t\t\t\t"+ enemy.getName());
         System.out.print(hero.getCurrentHealth() + "/" + hero.getMaxHealth());
-        System.out.print("\t\t\t\t\t" + enemy.getCurrentHealth() + "/" + enemy.getMaxHealth());
+        System.out.println("\t\t\t\t\t" + enemy.getCurrentHealth() + "/" + enemy.getMaxHealth());
+    }
+
+    private void printCooldown() {
+        System.out.println("Cd: " + hero.getSkill().getCooldown() + " \t\t\t\t\t");
+        if (enemy.getClass() == SkilledUnit.class) {
+            System.out.print("Cd: " + ((SkilledUnit) enemy).getSkill().getCooldown());
+        }
     }
 
     /**
@@ -141,23 +177,26 @@ public class BattleManager {
      * @param victim
      */
     private void normalAttack(Unit attacker, Unit victim) {
+
+        Sleep.sleep(1);
         //Will return if the attacker can evade the attack
         if (canEvade(victim.getUnitStats())) {
             System.out.println(victim.getName() + " evaded " + attacker.getName() + "'s attack");
             return;
         }
 
-
         System.out.println(attacker.getName() + " used normal attack");
         int damage = DamageHelper.damageOutput(attacker.getMinDamage(), attacker.getDamage());
         //Sets the damage to 2x the damage dealth if the attacker can crit
         if (canCrit(attacker.getUnitStats())) {
+            Sleep.sleep(1);
+            System.out.println(RED + "CRIT!!");
             damage += damage;
         }
 
+        Sleep.sleep(1);
         victim.takeDamage(damage);
-
-        System.out.println(damage + " damage");
+        System.out.println(PURPLE + damage + " damage" + BLACK);
     }
 
     /**
@@ -185,7 +224,7 @@ public class BattleManager {
         if (enemy.getClass() == SkilledUnit.class) {
             Skill skill = ((SkilledUnit) enemy).getSkill();
             if (skill.getCooldown() <= 0) {
-                SkillHelper.useSkill((SkilledUnit) enemy, hero);
+                useSkill((SkilledUnit) enemy, hero);
             } else {
                 normalAttack(enemy, hero);
             }

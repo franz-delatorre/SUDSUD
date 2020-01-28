@@ -1,6 +1,7 @@
 package util;
 
 import components.Stats;
+import misc.Broadcaster;
 import misc.StatType;
 
 public final class StatHelper {
@@ -18,6 +19,7 @@ public final class StatHelper {
         for (StatType statType: StatType.values()) {
             mainStats.increaseStat(statType, subStats.getStatValue(statType));
         }
+        Broadcaster.relayBuff(subStats);
     }
 
     /**

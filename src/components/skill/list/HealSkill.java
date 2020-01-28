@@ -3,6 +3,7 @@ package components.skill.list;
 import components.Health;
 import components.skill.Skill;
 import components.unit.Unit;
+import misc.Broadcaster;
 
 public class HealSkill extends Skill {
     private int heal;
@@ -31,9 +32,11 @@ public class HealSkill extends Skill {
 
         if (userCurrentHealth + heal > userMaxHealth) {
             userhealth.setCurrentHealth(userMaxHealth);
+            Broadcaster.relayHeal(userMaxHealth - userCurrentHealth);
         } else {
             int totalHeal = userCurrentHealth + heal;
             userhealth.setCurrentHealth(totalHeal);
+            Broadcaster.relayHeal(heal);
         }
     }
 }
