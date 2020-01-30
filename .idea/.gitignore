@@ -3,5 +3,5 @@
 .idea
 /out
 /src/META-INF
-../SUDSUD.iml
+/SUDSUD.iml
 ../src/components/Stats.java
