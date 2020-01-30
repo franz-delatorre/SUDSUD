@@ -1,7 +1,6 @@
 # Default ignored files
-/workspace.xml
+/.idea/workspace.xml
 .idea
 /out
 /src/META-INF
-/SUDSUD.iml
-../src/components/Stats.java
+SUDSUD.iml
