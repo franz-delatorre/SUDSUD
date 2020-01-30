@@ -89,6 +89,7 @@ public class BattleManager {
      * player's skill is on cooldown.
      */
     public void battleIO() {
+        System.out.println();
         System.out.println("[A] normal attack");
 
         if (hero.getSkill().getCooldown() <= 0) {
@@ -129,7 +130,7 @@ public class BattleManager {
     }
 
     private void printCooldown() {
-        System.out.println("Cd: " + hero.getSkill().getCooldown() + " \t\t\t\t\t");
+        System.out.print("Cd: " + hero.getSkill().getCooldown() + " \t\t\t\t\t");
         if (enemy.getClass() == SkilledUnit.class) {
             System.out.print("Cd: " + ((SkilledUnit) enemy).getSkill().getCooldown());
         }

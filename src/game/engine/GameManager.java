@@ -10,15 +10,16 @@ import components.item.Item;
 import components.item.UnitEquipment;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
-import dialogue.Dialogue;
+import dialogue.GameNarrative;
+import dialogue.Narrative;
 import misc.*;
-import util.Sleep;
 import util.StatHelper;
 
 import java.util.List;
 import java.util.Scanner;
 
 import static misc.TextColor.*;
+import static util.Sleep.sleep;
 
 public class GameManager implements GameCycle, GameOver {
 
@@ -27,9 +28,9 @@ public class GameManager implements GameCycle, GameOver {
     private boolean gameOver;
     private int progress;
     private BattleManager bm;
-    private Dialogue dialogue;
     private GameMap map;
     private GameMapProgress gameMapProgress;
+    private GameNarrative gameNarrative;
     private Inventory heroInventory;
     private Inventory gameInventory;
     private Room previousRoom;
@@ -44,11 +45,11 @@ public class GameManager implements GameCycle, GameOver {
 
         hero = gi.getHero();
         bm = new BattleManager(hero);
-        dialogue = gi.getDialogue();
         finalBoss = gi.getFinalBoss();
         gameInventory = gi.getItems();
         gameMapProgress = gi.getGameMapProgress();
         gameOver = false;
+        gameNarrative = gi.getGameNarrative();
         heroInventory = new Inventory();
         map = gi.getGameMap();
         progress = 0;
@@ -61,7 +62,7 @@ public class GameManager implements GameCycle, GameOver {
      * will increment if the current progress boss is slain.
      */
     public void start() {
-//        dialogue.getDialogue(progress);
+        checkRoomVariables();
         while (progressBossIsAlive()) {
             if (gameOver) return;
             getUserAction();
@@ -178,8 +179,10 @@ public class GameManager implements GameCycle, GameOver {
      * is an item to be picked up when: the enemy is slain, player is in the room.
      */
     private void checkRoomVariables() {
+        getNarrative(0);
         checkForEnemy();
         checkForItem();
+        getNarrative(1);
     }
 
     public boolean gameIsOver() {
@@ -206,7 +209,10 @@ public class GameManager implements GameCycle, GameOver {
         }
 
         // changes the location of the hero
-        if (progress == 2) map.setHeroLocation(secondLocation);
+        if (progress == 2) {
+            getNarrative(0);
+            map.setHeroLocation(secondLocation);
+        }
         map.setGameMap(gameMapProgress.getOpenedRooms(++progress));
     }
 
@@ -296,11 +302,11 @@ public class GameManager implements GameCycle, GameOver {
         if (gameInventory.contains(item)) {
             heroInventory.addItem(item);
 
-            Sleep.sleep(1);
+            sleep(1);
             System.out.println(ANSI_GREEN + "\nYou found an item" + ANSI_BLACK);
-            Sleep.sleep(1);
+            sleep(1);
             System.out.println(item.getName() + " is added in your inventory");
-            Sleep.sleep(3);
+            sleep(3);
             System.out.println();
         }
     }
@@ -317,9 +323,9 @@ public class GameManager implements GameCycle, GameOver {
         //Checks if the enemy is still alive
         if (enemy.isAlive()) {
             bm.setEnemy(enemy);
-            Sleep.sleep(1);
+            sleep(1);
             System.out.println(ANSI_RED + "There is an enemy in the room prepare for battle" + ANSI_BLACK);
-            Sleep.sleep(1);
+            sleep(1);
 
             //Will check who wins the battle. returns 1 if the player wins and
             // returns zero if otherwise.
@@ -397,16 +403,16 @@ public class GameManager implements GameCycle, GameOver {
         }
 
 
-        Sleep.sleep(1);
+        sleep(1);
         EquippableItem item = heroInventory.getItem(index);
         EquipmentType type = item.getEquipmentType();
         Stats heroStats = hero.getUnitStats();
         Stats itemStats = item.getItemStats();
         Item prevItem = equipment.getItem(type);
 
-        Sleep.sleep(1);
+        sleep(1);
         System.out.println("Equipping " + item.getName());
-        Sleep.sleep(1);
+        sleep(1);
 
         try {
             StatHelper.decreaseStats(heroStats, prevItem.getItemStats());
@@ -427,7 +433,36 @@ public class GameManager implements GameCycle, GameOver {
             hero.setDamage(hero.getDamage() + item.getDamage());
             System.out.println(ANSI_GREEN + "Damage: +" + item.getDamage());
         }
-        Sleep.sleep(2);
+        sleep(2);
         showEquipment();
+    }
+
+    private void getNarrative(int index) {
+        Room r = map.getHeroLocation();
+        Narrative n = gameNarrative.getNarrative(r);
+
+        try {
+            if (n.isNarrated()) {
+                return;
+            }
+        } catch (NullPointerException e) {
+            return;
+        }
+
+        try {
+            String[] strings = n.getStrings(index);
+            for (String s : strings) {
+                sleep(3);
+                System.out.println(ANSI_BLUE + s);
+            }
+        } catch (NullPointerException e) {
+
+        }
+        System.out.println(ANSI_BLACK);
+        sleep(1);
+
+        if (index > 0 ) {
+            n.setNarrated(true);
+        }
     }
 }

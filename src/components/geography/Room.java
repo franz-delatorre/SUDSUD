@@ -1,7 +1,6 @@
 package components.geography;
 
 import components.item.EquippableItem;
-import components.item.Item;
 import components.unit.Unit;
 import misc.Direction;
 
@@ -9,11 +8,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Room{
+    private EquippableItem item;
     private String name;
+    private Map<Direction, Room> adjacentRoom = new HashMap<>();
     private Point point;
     private Unit enemy;
-    private EquippableItem item;
-    private Map<Direction, Room> adjacentRoom = new HashMap<>();
 
     public Room(String name, Point point) {
         this.point = point;

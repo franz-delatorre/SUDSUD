@@ -1,6 +1,5 @@
 package components.unit;
 
-import components.Health;
 import components.skill.Skill;
 
 public class SkilledUnit extends Unit {

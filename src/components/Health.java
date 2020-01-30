@@ -1,7 +1,5 @@
 package components;
 
-import java.security.PublicKey;
-
 public class Health {
     private int maxHealth;
     private int currentHealth;

@@ -1,7 +1,6 @@
 package components.item;
 
 import components.Stats;
-import misc.EquipmentType;
 import misc.StatType;
 
 public abstract class Item {

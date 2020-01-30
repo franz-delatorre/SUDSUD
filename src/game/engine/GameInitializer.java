@@ -5,31 +5,34 @@ import components.geography.Point;
 import components.geography.Room;
 import components.item.EquippableItem;
 import components.item.Inventory;
-import components.item.Item;
 import components.skill.list.*;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import components.unit.UnskilledUnit;
-import dialogue.Dialogue;
+import dialogue.GameNarrative;
+import dialogue.Narrative;
 import misc.Direction;
 import misc.EquipmentType;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.Adler32;
 
 public class GameInitializer implements Initializer {
-    private Dialogue dialogue = new Dialogue();
     private Map<String, Unit> units = new HashMap<>();
     private Map<String, EquippableItem> items = new HashMap<>();
+    private Map<String, Narrative> narrativeList = new HashMap<>();
     private GameMap gameMap;
     private GameMapProgress gameMapProgress = new GameMapProgress();
+    private GameNarrative gameNarrative = new GameNarrative();
     private Inventory gameInventory = new Inventory();
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
+
+    public GameNarrative getGameNarrative() {
+        return gameNarrative;
+    }
 
     public Unit getFinalBoss() {
         return finalBoss;
@@ -51,10 +54,6 @@ public class GameInitializer implements Initializer {
         return hero;
     }
 
-    public Dialogue getDialogue() {
-        return dialogue;
-    }
-
     public Inventory getItems() {
         return gameInventory;
     }
@@ -62,8 +61,8 @@ public class GameInitializer implements Initializer {
     public void initialize() {
         setupUnits();
         setupItems();
-        setupRooms();
         setupDialogue();
+        setupRooms();
     }
 
     /**
@@ -79,7 +78,7 @@ public class GameInitializer implements Initializer {
         Room hallwayTwo = new Room("Hallway Two", new Point(0, 0));
         Room hallwayThree = new Room("Hallway Three", new Point(0, 1));
         Room livingRoom = new Room("Living Room", new Point(-1, 0));
-        Room servantQuarters = new Room("Servant Quarters", new Point(-2, 0));
+        Room servantQuarters = new Room("Servant's Quarters", new Point(-2, 0));
         Room diningHall = new Room("Dining Hall", new Point(1, 0));
         Room kitchen = new Room("Kitchen", new Point(2, 0));
         Room masterBedroom = new Room("Master's Bedroom", new Point(0, 2));
@@ -117,6 +116,15 @@ public class GameInitializer implements Initializer {
         kitchen_2.setEnemy(units.get("priestess"));
         servantQuarters_2.setEnemy(units.get("death"));
         hallwayOne_2.setEnemy(units.get("dracula"));
+
+        // Setting the gameNarrative
+        gameNarrative.addNarrative(hallwayOne, narrativeList.get("hallwayOne"));
+        gameNarrative.addNarrative(hallwayTwo, narrativeList.get("hallwayTwo"));
+        gameNarrative.addNarrative(livingRoom, narrativeList.get("livingRoom"));
+        gameNarrative.addNarrative(servantQuarters, narrativeList.get("servantsQuarters"));
+        gameNarrative.addNarrative(masterBedroom, narrativeList.get("mastersBedroom"));
+        gameNarrative.addNarrative(masterBedroom_2, narrativeList.get("mastersBedroom_2"));
+        gameNarrative.addNarrative(hallwayOne_2, narrativeList.get("dracula"));
 
         // Setting the adjacent rooms for each rooms
         hallwayOne.setAdjacentRoom(Direction.NORTH, hallwayTwo);
@@ -213,8 +221,8 @@ public class GameInitializer implements Initializer {
         //Hero of the game
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
-                .health(100)
-                .damage(10)
+                .health(15)
+                .damage(1500)
                 .lifesteal(0)
                 .criticalChance(5)
                 .evasion(0)
@@ -357,9 +365,11 @@ public class GameInitializer implements Initializer {
                 .build();
         EquippableItem rareSword = new EquippableItem.Builder()
                 .name("Rare Sword")
-                .damage(25)
+                .damage(50)
                 .healthBoost(50)
-                .criticalChance(5)
+                .criticalChance(15)
+                .evasion(5)
+                .lifesteal(5)
                 .equipmentType(EquipmentType.WEAPON)
                 .build();
         EquippableItem rapier = new EquippableItem.Builder()
@@ -385,7 +395,7 @@ public class GameInitializer implements Initializer {
                 .build();
         EquippableItem kevlar = new EquippableItem.Builder()
                 .name("Kevlar")
-                .healthBoost(200)
+                .healthBoost(250)
                 .evasion(15)
                 .criticalChance(10)
                 .lifesteal(5)
@@ -432,24 +442,100 @@ public class GameInitializer implements Initializer {
      */
     @Override
     public void setupDialogue() {
-        // Act 0
-        String[] actZero = new String[] {
-                "Welcome to Castlevania. Let's inspect the map to know where you are at.",
-                "Please press m."
+        String[] nullNarrative = new String[] {" ", " "};
+
+        String[] introduction = new String[] {
+                "Welcome to Castlevania.",
+                "I am Elmo the NPC",
+                "Are here to slay Count Dracula?",
+                "But before that you first must defeat his army of evil"
         };
 
-        String[] actOne = new String[] {
-                "Look there's an item on the floor. Let's pick it up.",
-                "You found: Common Sword"
+        String[] instructions = new String[] {
+                "To move around the map press [M]",
+                "Then select the location you want to go. [W = up, A = left, S = down, D = right]"
         };
 
-        String[] actTwo = new String[] {
-                "Prepare for battle, there's an enemy up ahead.",
-                "Ganbatte!"
+        String[] foundAnItem = new String[] {
+                "Great! You found an item.",
+                "Items found will go directly to you inventory. press [I] to open your inventory",
+                "Don't forget to inspect your item [I] and equip it to help you on your quest [U]",
+                "But first we must exit the map, press [E]"
         };
 
-        dialogue.addDialogue(actZero);
-        dialogue.addDialogue(actOne);
-        dialogue.addDialogue(actTwo);
+        String[] enemyFound = new String[] {
+                "Watch out! There's a banshee waiting for you at the corner",
+                "Prepare for battle buddy and best of luck."
+        };
+
+        String[] enemySlain = new String[] {
+                "Good job buddy! you killed that banshee!",
+                "Look she dropped an item! Its an amulet! You'll look good if you wear it."
+        };
+
+        String[] bossFound = new String[] {
+                "To arms! beyond this door is Medusa!",
+                "Defeat the level boss and you'll open new rooms in the map",
+                "Goodluck!!!"
+        };
+
+        String[] firstBossKill = new String[] {
+                "Great! You killed the boss Medusa!",
+                "Hold on the ground is shaking!!! ",
+                ".............",
+                "It looks like the castle is changing or something",
+                "Hmmmmmmm"
+        };
+
+        String[] tierOneBossKill = new String[] {
+                "Whoooooa!! It's shaking again!! Hold tight!",
+                "..................",
+                ".................."
+        };
+
+        String[] castleChange = new String[] {
+                "Whoaaaa! I think the castle changed again.",
+                "This time we are upside down!!",
+        };
+
+        String[] draculaRoom = new String[] {
+                "I could feel Dracula's presence beyond this room",
+                "Prepare yourself for the greatest battle of your life"
+        };
+
+        Narrative hallwayOneNarrative = new Narrative();
+        Narrative hallwayTwoNarrative = new Narrative();
+        Narrative livingRoomNarrative = new Narrative();
+        Narrative servantsNarrative = new Narrative();
+        Narrative masterNarrative = new Narrative();
+        Narrative masterNarrative_2 = new Narrative();
+        Narrative hallwayOneNarrative_2 = new Narrative();
+
+        hallwayOneNarrative.addNarrative(introduction);
+        hallwayOneNarrative.addNarrative(instructions);
+
+        hallwayTwoNarrative.addNarrative(nullNarrative);
+        hallwayTwoNarrative.addNarrative(foundAnItem);
+
+        livingRoomNarrative.addNarrative(enemyFound);
+        livingRoomNarrative.addNarrative(enemySlain);
+
+        servantsNarrative.addNarrative(bossFound);
+        servantsNarrative.addNarrative(firstBossKill);
+
+        masterNarrative.addNarrative(nullNarrative);
+        masterNarrative.addNarrative(tierOneBossKill);
+
+        masterNarrative_2.addNarrative(castleChange);
+
+        hallwayOneNarrative_2.addNarrative(draculaRoom);
+
+        narrativeList.put("hallwayOne", hallwayOneNarrative);
+        narrativeList.put("hallwayTwo", hallwayTwoNarrative);
+        narrativeList.put("livingRoom", hallwayTwoNarrative);
+        narrativeList.put("servantsQuarters", servantsNarrative);
+        narrativeList.put("mastersBedroom", masterNarrative);
+        narrativeList.put("mastersBedroom_2", masterNarrative_2);
+        narrativeList.put("dracula", hallwayOneNarrative_2);
     }
 }

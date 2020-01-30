@@ -1,8 +1,6 @@
 package components.item;
 
-import components.Stats;
 import misc.EquipmentType;
-import misc.StatType;
 
 public class EquippableItem extends Item {
     private EquipmentType equipmentType;

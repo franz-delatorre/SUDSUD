@@ -1,6 +1,5 @@
 package components.geography;
 
-import components.geography.Room;
 import misc.Direction;
 import misc.TextColor;
 
