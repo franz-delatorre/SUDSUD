@@ -221,8 +221,8 @@ public class GameInitializer implements Initializer {
         //Hero of the game
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
-                .health(15)
-                .damage(1500)
+                .health(110)
+                .damage(15)
                 .lifesteal(0)
                 .criticalChance(5)
                 .evasion(0)
@@ -447,7 +447,7 @@ public class GameInitializer implements Initializer {
         String[] introduction = new String[] {
                 "Welcome to Castlevania.",
                 "I am Elmo the NPC",
-                "Are here to slay Count Dracula?",
+                "Are you here to slay Count Dracula?",
                 "But before that you first must defeat his army of evil"
         };
 
