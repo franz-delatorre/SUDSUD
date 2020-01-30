@@ -100,6 +100,7 @@ public class GameInitializer implements Initializer {
         masterBedroom.setItem(items.get("rareSword"));
         kitchen_2.setItem(items.get("kevlar"));
         livingRoom_2.setItem(items.get("talisman"));
+        hallwayThree_2.setItem(items.get("talismanEvasion"));
         servantQuarters_2.setItem(items.get("rapier"));
 
         // Setting the enemies in each rooms
@@ -234,7 +235,7 @@ public class GameInitializer implements Initializer {
         SkilledUnit dracula = new SkilledUnit.Builder()
                 .damage(65).health(700)
                 .name("Vlad the Impaler")
-                .evasion(25)
+                .evasion(5)
                 .criticalChance(25)
                 .lifesteal(25)
                 .setSkill(chaosStrike)
@@ -402,6 +403,11 @@ public class GameInitializer implements Initializer {
                 .damage(50)
                 .equipmentType(EquipmentType.ARMOR)
                 .build();
+        EquippableItem talismanEvasion = new EquippableItem.Builder()
+                .name("Talisman of Evasion")
+                .evasion(40)
+                .equipmentType(EquipmentType.AMULET)
+                .build();
         EquippableItem redMoon = new EquippableItem.Builder()
                 .name("Red Moon")
                 .healthBoost(40)
@@ -426,6 +432,7 @@ public class GameInitializer implements Initializer {
         items.put("kevlar", kevlar);
         items.put("redMoon", redMoon);
         items.put("talisman", talisman);
+        items.put("talismanEvasion", talismanEvasion);
 
         gameInventory.addItem(commonSword);
         gameInventory.addItem(rareSword);
@@ -435,6 +442,7 @@ public class GameInitializer implements Initializer {
         gameInventory.addItem(kevlar);
         gameInventory.addItem(redMoon);
         gameInventory.addItem(talisman);
+        gameInventory.addItem(talismanEvasion);
     }
 
     /**
@@ -442,7 +450,7 @@ public class GameInitializer implements Initializer {
      */
     @Override
     public void setupDialogue() {
-        String[] nullNarrative = new String[] {" ", " "};
+        String[] nullNarrative = new String[] {};
 
         String[] introduction = new String[] {
                 "Welcome to Castlevania.",
@@ -529,6 +537,7 @@ public class GameInitializer implements Initializer {
         masterNarrative_2.addNarrative(castleChange);
 
         hallwayOneNarrative_2.addNarrative(draculaRoom);
+        hallwayOneNarrative_2.addNarrative(nullNarrative);
 
         narrativeList.put("hallwayOne", hallwayOneNarrative);
         narrativeList.put("hallwayTwo", hallwayTwoNarrative);
