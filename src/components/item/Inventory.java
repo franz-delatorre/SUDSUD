@@ -4,21 +4,24 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Inventory {
-    private List<Item> inventory = new ArrayList<>();
+    private List<EquippableItem> inventory = new ArrayList<>();
 
-    public void addItem(Item item) {
+    public void addItem(EquippableItem item) {
         inventory.add(item);
     }
 
-    public List<Item> getInventory() {
+    public List<EquippableItem> getInventory() {
         return inventory;
     }
 
-    public Item getItem(int index) {
+    public EquippableItem getItem(int index) throws IndexOutOfBoundsException{
+        if (index > inventory.size()) {
+            return null;
+        }
         return inventory.get(index - 1);
     }
 
-    public boolean contains(Item item) {
+    public boolean contains(EquippableItem item) {
         return inventory.contains(item);
     }
 }

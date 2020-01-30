@@ -2,10 +2,11 @@ package components.geography;
 
 import components.geography.Room;
 import misc.Direction;
+import misc.TextColor;
 
 import java.util.ArrayList;
 
-public class GameMap {
+public class GameMap implements ShowMap, CheckAdjacentRoom, ReturnBossRoom {
     private ArrayList<Room> openRooms;
     private Room heroLocation;
 
@@ -13,6 +14,7 @@ public class GameMap {
         this.openRooms = openRooms;
         this.heroLocation = heroLocation;
     }
+
 
     public void setHeroLocation(Room heroLocation) {
         this.heroLocation = heroLocation;
@@ -22,20 +24,31 @@ public class GameMap {
         openRooms = newRoom;
     }
 
-    public void addOpenRoom(Room room) {
-        this.openRooms.add(room);
-    }
-
-    public ArrayList<Room> getOpenRooms() {
-        return openRooms;
-    }
-
     public Room getHeroLocation() {
         return heroLocation;
     }
 
+    /**
+     * Boss room should be the last room added to the openRooms. This limit should be done during
+     * the construction of the rooms and setting the game map using the 
+     * {@link GameMap#setGameMap(ArrayList) method.
+     * @return
+     */
     public Room getBossRoom() {
         return openRooms.get(openRooms.size() - 1);
+    }
+
+    /**
+     * Will return true if the adjacent direction's room is in the list of
+     * opened rooms in the game map.
+     * @param to
+     * @param room
+     * @return
+     */
+    public boolean canMoveToAdjacentRoom (Direction to, Room room) {
+        Room adjRm = room.getAdjacentRoom(to);
+        if (openRooms.contains(adjRm)) return true;
+        return false;
     }
 
     /**
@@ -55,7 +68,7 @@ public class GameMap {
             yRange = getAxisRange(yRange, rmPoint.getyAxis());
         }
 
-        System.out.println("=================================");
+        System.out.println(TextColor.ANSI_RESET +  "=================================" + TextColor.ANSI_BLACK);
         for (int y = yRange[1]; y >= yRange[0]; y--) {
             for (int x = xRange[0]; x <= xRange[1]; x++) {
 
@@ -65,7 +78,7 @@ public class GameMap {
 
                     //Checks if the hero is at the current specified point
                     if (heroPoints.getyAxis() == y && heroPoints.getxAxis() == x) {
-                        System.out.printf("[ * ]");
+                        System.out.printf(TextColor.ANSI_GREEN + "[ * ]" + TextColor.ANSI_BLACK);
                     } else {
                         System.out.printf("[   ]");
                     }
@@ -75,8 +88,8 @@ public class GameMap {
             }
             System.out.println("\n");
         }
-        System.out.println("      ==" + heroLocation.getName() +"==      ");
-        System.out.println("=================================");
+        System.out.println("      == "+ TextColor.ANSI_GREEN + heroLocation.getName() + TextColor.ANSI_BLACK + " ==      ");
+        System.out.println(TextColor.ANSI_RESET +  "=================================" + TextColor.ANSI_BLACK);
     }
 
     /**
@@ -106,19 +119,6 @@ public class GameMap {
                 return true;
             }
         }
-        return false;
-    }
-
-    /**
-     * Will return true if the adjacent direction's room is in the list of
-     * opened rooms in the game map.
-     * @param to
-     * @param room
-     * @return
-     */
-    public  boolean canMoveToAdjacentRoom (Direction to, Room room) {
-        Room adjRm = room.getAdjacentRoom(to);
-        if (openRooms.contains(adjRm)) return true;
         return false;
     }
 }

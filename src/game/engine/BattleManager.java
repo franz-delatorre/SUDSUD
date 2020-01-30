@@ -6,10 +6,7 @@ import components.unit.SkilledUnit;
 import components.unit.Unit;
 import misc.StatType;
 import misc.TextColor;
-import util.DamageHelper;
-import util.RandomGenerator;
-import util.SkillHelper;
-import util.Sleep;
+import util.*;
 
 import java.util.Scanner;
 
@@ -186,19 +183,32 @@ public class BattleManager {
         }
 
         int damage = DamageHelper.damageOutput(attacker.getMinDamage(), attacker.getDamage());
-        //Sets the damage to 2x the damage dealth if the attacker can crit
-        if (canCrit(attacker.getUnitStats())) {
+
+        //Sets the damage to 2x the damage dealt if canCrit() is true
+        Stats stat = attacker.getUnitStats();
+        if (canCrit(stat)) {
             Sleep.sleep(1);
             System.out.println(RED + "CRIT!!");
             damage += damage;
         }
-
         Sleep.sleep(1);
-        victim.takeDamage(damage);
+
+        // decreases the victim's hp
+        DamageHelper.doDamage(victim.getHealth(), damage);
         System.out.println(PURPLE + damage + " damage" + BLACK);
+
+        //
+        int lsValue = stat.getStatValue(StatType.LIFESTEAL);
+        if (lsValue > 0) {
+            Sleep.sleep(1);
+            double ls = damage * (lsValue / 100);
+            System.out.println(GREEN +ls + " lifesteal" + BLACK);
+            HealthHelper.heal(attacker.getHealth(), (int) ls);
+        }
+        Sleep.sleep(1);
     }
 
-    /**
+    /**`
      * Will generate a chance for doing a critical attack
      * @param stats
      * @return
@@ -211,6 +221,9 @@ public class BattleManager {
     private boolean canEvade(Stats stats) {
         if (RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.EVASION)) return true;
         return false;
+    }
+
+    private void lifesteal(Stats stats, int damage) {
     }
 
     /**

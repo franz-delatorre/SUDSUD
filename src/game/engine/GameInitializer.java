@@ -12,6 +12,7 @@ import components.unit.Unit;
 import components.unit.UnskilledUnit;
 import dialogue.Dialogue;
 import misc.Direction;
+import misc.EquipmentType;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,7 +23,7 @@ import java.util.zip.Adler32;
 public class GameInitializer implements Initializer {
     private Dialogue dialogue = new Dialogue();
     private Map<String, Unit> units = new HashMap<>();
-    private Map<String, Item> items = new HashMap<>();
+    private Map<String, EquippableItem> items = new HashMap<>();
     private GameMap gameMap;
     private GameMapProgress gameMapProgress = new GameMapProgress();
     private Inventory gameInventory = new Inventory();
@@ -212,7 +213,7 @@ public class GameInitializer implements Initializer {
         //Hero of the game
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
-                .health(1000)
+                .health(100)
                 .damage(10)
                 .lifesteal(0)
                 .criticalChance(5)
@@ -269,7 +270,7 @@ public class GameInitializer implements Initializer {
                 .build();
         SkilledUnit casper = new SkilledUnit.Builder()
                 .damage(20)
-                .health(170)
+                .health(140)
                 .name("Casper")
                 .evasion(10)
                 .criticalChance(5)
@@ -277,7 +278,7 @@ public class GameInitializer implements Initializer {
                 .build();
         SkilledUnit lilith = new SkilledUnit.Builder()
                 .damage(30)
-                .health(210)
+                .health(170)
                 .name("Lilith")
                 .criticalChance(10)
                 .lifesteal(10)
@@ -348,54 +349,63 @@ public class GameInitializer implements Initializer {
     //Sets up the items in the game then saves it in an inventory named gameInventory
     @Override
     public void setupItems() {
-        Item commonSword = new EquippableItem.Builder()
+        EquippableItem commonSword = new EquippableItem.Builder()
                 .name("Common Sword")
+                .evasion(5)
                 .damage(10)
+                .equipmentType(EquipmentType.WEAPON)
                 .build();
-        Item rareSword = new EquippableItem.Builder()
+        EquippableItem rareSword = new EquippableItem.Builder()
                 .name("Rare Sword")
                 .damage(25)
                 .healthBoost(50)
                 .criticalChance(5)
+                .equipmentType(EquipmentType.WEAPON)
                 .build();
-        Item rapier = new EquippableItem.Builder()
+        EquippableItem rapier = new EquippableItem.Builder()
                 .name("Rapier")
                 .damage(150)
                 .criticalChance(25)
                 .lifesteal(25)
                 .evasion(10)
+                .equipmentType(EquipmentType.WEAPON)
                 .build();
-        Item chainMail = new EquippableItem.Builder()
+        EquippableItem chainMail = new EquippableItem.Builder()
                 .name("Chain Mail")
                 .healthBoost(30)
+                .equipmentType(EquipmentType.ARMOR)
                 .build();
-        Item breastPlate = new EquippableItem.Builder()
+        EquippableItem breastPlate = new EquippableItem.Builder()
                 .name("Breast Plate")
                 .healthBoost(80)
                 .damage(15)
                 .evasion(5)
                 .lifesteal(5)
+                .equipmentType(EquipmentType.ARMOR)
                 .build();
-        Item kevlar = new EquippableItem.Builder()
+        EquippableItem kevlar = new EquippableItem.Builder()
                 .name("Kevlar")
                 .healthBoost(200)
                 .evasion(15)
                 .criticalChance(10)
                 .lifesteal(5)
                 .damage(50)
+                .equipmentType(EquipmentType.ARMOR)
                 .build();
-        Item redMoon = new EquippableItem.Builder()
+        EquippableItem redMoon = new EquippableItem.Builder()
                 .name("Red Moon")
                 .healthBoost(40)
                 .damage(5)
                 .evasion(5)
                 .criticalChance(5)
                 .lifesteal(10)
+                .equipmentType(EquipmentType.AMULET)
                 .build();
-        Item talisman = new EquippableItem.Builder()
+        EquippableItem talisman = new EquippableItem.Builder()
                 .name("Vampire's Talisman")
                 .healthBoost(10)
                 .lifesteal(25)
+                .equipmentType(EquipmentType.AMULET)
                 .build();
 
         items.put("commonSword", commonSword);
@@ -441,6 +451,5 @@ public class GameInitializer implements Initializer {
         dialogue.addDialogue(actZero);
         dialogue.addDialogue(actOne);
         dialogue.addDialogue(actTwo);
-
     }
 }

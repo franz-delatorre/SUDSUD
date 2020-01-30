@@ -1,5 +1,6 @@
 package components.geography;
 
+import components.item.EquippableItem;
 import components.item.Item;
 import components.unit.Unit;
 import misc.Direction;
@@ -11,7 +12,7 @@ public class Room{
     private String name;
     private Point point;
     private Unit enemy;
-    private Item item;
+    private EquippableItem item;
     private Map<Direction, Room> adjacentRoom = new HashMap<>();
 
     public Room(String name, Point point) {
@@ -23,11 +24,11 @@ public class Room{
         this.enemy = enemy;
     }
 
-    public Item getItem() {
+    public EquippableItem getItem() {
         return item;
     }
 
-    public void setItem(Item item) {
+    public void setItem(EquippableItem item) {
         this.item = item;
     }
 
@@ -67,23 +68,5 @@ public class Room{
 
         adjacentRoom.put(to, room);
         room.setAdjacentRoom(to.getOpposite(), this);
-    }
-
-    /**
-     * Returns true if the adjacent room is not equal to null.
-     * @param to
-     * @return
-     */
-    public boolean adjacentRoomExist(Direction to) {
-        if (adjacentRoom.get(to) == null) return false;
-        return true;
-    }
-
-    /**
-     * Checks if the enemy in this room is alive.
-     * @return
-     */
-    public boolean enemyIsAlive() {
-        return enemy.isAlive();
     }
 }

@@ -34,10 +34,6 @@ public class EquippableItem extends Item {
         equipmentType = builder.equipmentType;
     }
 
-    public EquippableItem getItem(EquipmentType equipmentType) {
-        return this;
-    }
-
     public EquipmentType getEquipmentType() {
         return equipmentType;
     }

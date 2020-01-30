@@ -1,21 +1,12 @@
 package util;
 
 import components.Health;
+import misc.TextColor;
 
 public final class HealthHelper {
 
     private HealthHelper() {
 
-    }
-
-    /**
-     * Reduces the current health by the damage value given;
-     * @param health
-     * @param damage
-     */
-    public static void takeDamage(Health health, int damage) {
-        int currentHealth = health.getCurrentHealth();
-        health.setCurrentHealth(currentHealth - damage);
     }
 
     /**
@@ -26,9 +17,12 @@ public final class HealthHelper {
     public static void heal(Health health, int heal) {
         int currentHealth = health.getCurrentHealth();
         if (currentHealth + heal > health.getMaxHealth()) {
-            health.setCurrentHealth(health.getCurrentHealth());
+            health.setCurrentHealth(health.getMaxHealth());
+            int max = health.getMaxHealth();
+            System.out.println(TextColor.ANSI_GREEN + "+" + (max - currentHealth) + " health" + TextColor.ANSI_BLACK);
         } else {
             health.setCurrentHealth(currentHealth + heal);
+            System.out.println(TextColor.ANSI_GREEN + "+" + heal + " health" + TextColor.ANSI_BLACK);
         }
     }
 }

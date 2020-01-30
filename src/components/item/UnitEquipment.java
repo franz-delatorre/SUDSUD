@@ -19,4 +19,5 @@ public class UnitEquipment {
     public void equipItem(EquippableItem item) {
         equipment.put(item.getEquipmentType(), item);
     }
+
 }

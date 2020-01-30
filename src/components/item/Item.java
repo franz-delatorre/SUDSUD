@@ -71,6 +71,14 @@ public abstract class Item {
         healthBoost = builder.healthBoost;
     }
 
+    public int getDamage() {
+        return damage;
+    }
+
+    public int getHealthBoost() {
+        return healthBoost;
+    }
+
     public Stats getItemStats() {
         return itemStats;
     }
