@@ -1,8 +1,0 @@
-<component name="ArtifactManager">
-  <artifact type="jar" name="SUDSUD:jar">
-    <output-path>$PROJECT_DIR$/out/artifacts/SUDSUD_jar</output-path>
-    <root id="archive" name="SUDSUD.jar">
-      <element id="module-output" name="SUDSUD" />
-    </root>
-  </artifact>
-</component>
