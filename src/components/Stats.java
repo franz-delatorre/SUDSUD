@@ -3,7 +3,6 @@ package components;
 import misc.StatType;
 
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Map;
 
 public class Stats {

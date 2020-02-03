@@ -2,8 +2,6 @@ package util;
 
 import components.Health;
 
-import java.util.Random;
-
 public final class DamageHelper {
 
     /**
@@ -17,6 +15,12 @@ public final class DamageHelper {
         return damage;
     }
 
+    /**
+     * Decreases the current health by the damage given. If the damage
+     * is < 0 the current health is set to 0.
+     * @param health
+     * @param damage
+     */
     public static void doDamage(Health health, int damage) {
         int ch = health.getCurrentHealth();
 

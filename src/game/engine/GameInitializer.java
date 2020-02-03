@@ -4,7 +4,6 @@ import components.geography.GameMap;
 import components.geography.Point;
 import components.geography.Room;
 import components.item.EquippableItem;
-import components.item.Inventory;
 import components.skill.list.*;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
@@ -25,7 +24,7 @@ public class GameInitializer implements Initializer {
     private GameMap gameMap;
     private GameMapProgress gameMapProgress = new GameMapProgress();
     private GameNarrative gameNarrative = new GameNarrative();
-    private Inventory gameInventory = new Inventory();
+    private InventoryManager gameInventory = new InventoryManager();
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
@@ -54,7 +53,7 @@ public class GameInitializer implements Initializer {
         return hero;
     }
 
-    public Inventory getItems() {
+    public InventoryManager getGameInventory() {
         return gameInventory;
     }
 
@@ -223,8 +222,8 @@ public class GameInitializer implements Initializer {
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
                 .health(110)
-                .damage(15)
-                .lifesteal(0)
+                .damage(50)
+                .lifesteal(20)
                 .criticalChance(5)
                 .evasion(0)
                 .setSkill(soulSteal)
@@ -434,15 +433,16 @@ public class GameInitializer implements Initializer {
         items.put("talisman", talisman);
         items.put("talismanEvasion", talismanEvasion);
 
-        gameInventory.addItem(commonSword);
-        gameInventory.addItem(rareSword);
-        gameInventory.addItem(rapier);
-        gameInventory.addItem(chainMail);
-        gameInventory.addItem(breastPlate);
-        gameInventory.addItem(kevlar);
-        gameInventory.addItem(redMoon);
-        gameInventory.addItem(talisman);
-        gameInventory.addItem(talismanEvasion);
+        gameInventory.addItemToGameInventory(commonSword);
+        gameInventory.addItemToGameInventory(rareSword);
+        gameInventory.addItemToGameInventory(rapier);
+        gameInventory.addItemToGameInventory(chainMail);
+        gameInventory.addItemToGameInventory(breastPlate);
+        gameInventory.addItemToGameInventory(kevlar);
+        gameInventory.addItemToGameInventory(redMoon);
+        gameInventory.addItemToGameInventory(talisman);
+        gameInventory.addItemToGameInventory(talismanEvasion);
+        gameInventory.setHero(hero);
     }
 
     /**
@@ -450,6 +450,8 @@ public class GameInitializer implements Initializer {
      */
     @Override
     public void setupDialogue() {
+
+        // Sets the String array of each progress/room.
         String[] nullNarrative = new String[] {};
 
         String[] introduction = new String[] {
@@ -511,6 +513,7 @@ public class GameInitializer implements Initializer {
                 "Prepare yourself for the greatest battle of your life"
         };
 
+        // Creates instances of Narrative
         Narrative hallwayOneNarrative = new Narrative();
         Narrative hallwayTwoNarrative = new Narrative();
         Narrative livingRoomNarrative = new Narrative();
@@ -519,6 +522,7 @@ public class GameInitializer implements Initializer {
         Narrative masterNarrative_2 = new Narrative();
         Narrative hallwayOneNarrative_2 = new Narrative();
 
+        // Adds the String arrays to their corresponding narrative
         hallwayOneNarrative.addNarrative(introduction);
         hallwayOneNarrative.addNarrative(instructions);
 
@@ -539,6 +543,7 @@ public class GameInitializer implements Initializer {
         hallwayOneNarrative_2.addNarrative(draculaRoom);
         hallwayOneNarrative_2.addNarrative(nullNarrative);
 
+        // Setup the narrative list in a hashmap
         narrativeList.put("hallwayOne", hallwayOneNarrative);
         narrativeList.put("hallwayTwo", hallwayTwoNarrative);
         narrativeList.put("livingRoom", hallwayTwoNarrative);

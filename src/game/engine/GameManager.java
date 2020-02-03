@@ -1,21 +1,16 @@
 package game.engine;
 
-import components.Health;
 import components.Stats;
 import components.geography.GameMap;
 import components.geography.Room;
 import components.item.EquippableItem;
 import components.item.Inventory;
-import components.item.Item;
-import components.item.UnitEquipment;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import dialogue.GameNarrative;
 import dialogue.Narrative;
 import misc.*;
-import util.StatHelper;
 
-import java.util.List;
 import java.util.Scanner;
 
 import static misc.TextColor.*;
@@ -31,13 +26,12 @@ public class GameManager implements GameCycle, GameOver {
     private GameMap map;
     private GameMapProgress gameMapProgress;
     private GameNarrative gameNarrative;
+    private InventoryManager inventoryManager;
     private Inventory heroInventory;
-    private Inventory gameInventory;
     private Room previousRoom;
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
-    private UnitEquipment equipment;
 
     public GameManager() {
         GameInitializer gi = new GameInitializer();
@@ -46,7 +40,7 @@ public class GameManager implements GameCycle, GameOver {
         hero = gi.getHero();
         bm = new BattleManager(hero);
         finalBoss = gi.getFinalBoss();
-        gameInventory = gi.getItems();
+        inventoryManager = gi.getGameInventory();
         gameMapProgress = gi.getGameMapProgress();
         gameOver = false;
         gameNarrative = gi.getGameNarrative();
@@ -54,7 +48,6 @@ public class GameManager implements GameCycle, GameOver {
         map = gi.getGameMap();
         progress = 0;
         secondLocation = gi.getSecondLocation();
-        equipment = new UnitEquipment();
     }
 
     /**
@@ -84,7 +77,7 @@ public class GameManager implements GameCycle, GameOver {
 
         switch (opt) {
             case "i":
-                openInventory();
+                inventoryManager.openInventoryMenu();
                 break;
             case "m":
                 map.showMap();
@@ -265,52 +258,16 @@ public class GameManager implements GameCycle, GameOver {
         System.out.printf("\n" + ANSI_BLACK);
     }
 
-    private void showInventory() throws NullPointerException {
-        int index = 1;
-        System.out.println();
-        System.out.println(ANSI_BLACK + "===========================");
-        System.out.println(ANSI_PURPLE + "Inventory\n");
-        List<EquippableItem> items = heroInventory.getInventory();
-        for (EquippableItem i : items) {
-            System.out.println(index++ + ". " + i.getName());
-        }
-        System.out.println(ANSI_BLACK);
-
-    }
-
-    private void showEquipment() {
-
-        System.out.println(ANSI_BLACK + "===========================" + ANSI_CYAN);
-        System.out.println("Equipment\n");
-        for (EquipmentType equipmentType: EquipmentType.values()) {
-            EquippableItem item = equipment.getItem(equipmentType);
-            try {
-                System.out.println(equipmentType.toString() + ": " + item.getName());
-            } catch (NullPointerException e) {
-                System.out.println(equipmentType.toString() + ": ");
-            }
-        }
-        System.out.println(ANSI_BLACK);
-    }
-
     private void checkForItem() {
         Room room = map.getHeroLocation();
         EquippableItem item = room.getItem();
-
-        if (heroInventory.contains(item)) return;
-
-        if (gameInventory.contains(item)) {
-            heroInventory.addItem(item);
-
-            sleep(1);
-            System.out.println(ANSI_GREEN + "\nYou found an item" + ANSI_BLACK);
-            sleep(1);
-            System.out.println(item.getName() + " is added in your inventory");
-            sleep(3);
-            System.out.println();
-        }
+        if (inventoryManager.heroInventoryContains(item)) return;
+        inventoryManager.addItemToHeroInventory(item);
     }
 
+    /**
+     * Checks for an enemy. A battle will ensue if an enemy exist and then enemy is Alive.
+     */
     private void checkForEnemy() {
         Room room = map.getHeroLocation();
         Unit enemy = room.getEnemy();
@@ -345,98 +302,10 @@ public class GameManager implements GameCycle, GameOver {
         }
     }
 
-    private void openInventory() {
-        showInventory();
-        showEquipment();
-        System.out.println();
-        System.out.println("[E] Exit");
-        System.out.println("[I] Inspect Item");
-        System.out.println("[U] Equip Item");
-
-        Scanner sc = new Scanner(System.in);
-
-        switch (sc.nextLine().toLowerCase()) {
-            case "e":
-                return;
-            case "i":
-                System.out.println();
-                System.out.println(ANSI_BLUE+ "Item no.:" +ANSI_BLACK);
-                inspectItem(sc.nextInt());
-                break;
-            case "u":
-                System.out.println();
-                System.out.println(ANSI_BLUE + "Item no.:" + ANSI_BLACK);
-                useItem(sc.nextInt());
-                break;
-            default:
-                System.out.println(ANSI_RED + "Invalid input, try again." + ANSI_BLACK);
-                System.out.println();
-                openInventory();
-        }
-    }
-
-    private void inspectItem(int index) {
-        if (heroInventory.getItem(index) == null) {
-            System.out.println(ANSI_RED + "Sorry wrong input or item does not exist" + ANSI_BLACK);
-            openInventory();
-        }
-        EquippableItem item = heroInventory.getItem(index);
-        System.out.println();
-        System.out.println("Name: " + item.getName());
-        System.out.println("Ty[e: " + item.getEquipmentType());
-        System.out.println(ANSI_PURPLE + "Item Boost");
-        if (item.getDamage() > 0 ) System.out.println("Damage: +" + item.getDamage());
-        if (item.getHealthBoost() > 0 ) System.out.println("Health Boost: +" + item.getHealthBoost());
-
-        Stats s = item.getItemStats();
-        for (StatType statType: StatType.values()) {
-            if (s.getStatValue(statType) > 0 ) System.out.println(statType.toString() + ": +" + s.getStatValue(statType));
-        }
-        System.out.println(ANSI_BLACK);
-        showEquipment();
-    }
-
-    private void useItem(int index){
-        if (heroInventory.getItem(index) == null) {
-            System.out.println("Sorry wrong input or item does not exist");
-            openInventory();
-        }
-
-
-        sleep(1);
-        EquippableItem item = heroInventory.getItem(index);
-        EquipmentType type = item.getEquipmentType();
-        Stats heroStats = hero.getUnitStats();
-        Stats itemStats = item.getItemStats();
-        Item prevItem = equipment.getItem(type);
-
-        sleep(1);
-        System.out.println("Equipping " + item.getName());
-        sleep(1);
-
-        try {
-            StatHelper.decreaseStats(heroStats, prevItem.getItemStats());
-            StatHelper.increaseStats(heroStats, itemStats);
-        } catch (NullPointerException e) {
-            StatHelper.increaseStats(heroStats, itemStats);
-        } finally {
-            equipment.equipItem(item);
-        }
-
-        Health h = hero.getHealth();
-        if (item.getHealthBoost() > 0) {
-            System.out.println(ANSI_GREEN + "Health: + " + item.getHealthBoost());
-            h.setMaxHealth(h.getMaxHealth() + item.getHealthBoost());
-        }
-
-        if (item.getDamage() > 0) {
-            hero.setDamage(hero.getDamage() + item.getDamage());
-            System.out.println(ANSI_GREEN + "Damage: +" + item.getDamage());
-        }
-        sleep(2);
-        showEquipment();
-    }
-
+    /**
+     * Gets the narrative of the room. Then sets the isNarrated value to true.
+     * @param index
+     */
     private void getNarrative(int index) {
         Room r = map.getHeroLocation();
         Narrative n = gameNarrative.getNarrative(r);

@@ -5,19 +5,19 @@ import components.skill.Skill;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import misc.StatType;
-import misc.TextColor;
 import util.*;
 
 import java.util.Scanner;
 
+import static misc.TextColor.ANSI_BLACK;
+import static misc.TextColor.ANSI_BLUE;
+import static misc.TextColor.ANSI_CYAN;
+import static misc.TextColor.ANSI_RED;
+import static misc.TextColor.ANSI_PURPLE;
+import static misc.TextColor.ANSI_RESET;
+
 public class BattleManager {
     private static final Scanner scanner = new Scanner(System.in);
-    private static final String BLACK = TextColor.ANSI_BLACK;
-    private static final String CYAN = TextColor.ANSI_CYAN;
-    private static final String RED = TextColor.ANSI_RED;
-    private static final String PURPLE = TextColor.ANSI_PURPLE;
-    private static final String BLUE = TextColor.ANSI_BLUE;
-    private static final String GREEN = TextColor.ANSI_GREEN;
 
     private SkilledUnit hero;
     private Unit enemy;
@@ -56,7 +56,7 @@ public class BattleManager {
             Sleep.sleep(1);
             printHealth();
             decrementCooldown();
-            System.out.println(BLUE + " - END OF TURN " + turn++ + " - " + BLACK);
+            System.out.println(ANSI_BLUE + " - END OF TURN " + turn++ + " - " + ANSI_BLACK);
             System.out.println("__________________________________");
             Sleep.sleep(1);
         }
@@ -116,12 +116,12 @@ public class BattleManager {
 
     private void useSkill(SkilledUnit user, Unit victim) {
         Skill skill = user.getSkill();
-        System.out.println(CYAN + user.getName() + " used " + skill.getName() + BLACK);
+        System.out.println(ANSI_CYAN + user.getName() + " used " + skill.getName() + ANSI_BLACK);
         SkillHelper.useSkill(user, victim);
     }
 
     /**
-     * Prints both units current health and max health
+     * Prints the player's and enemy's current health and max health
      */
     private void printHealth() {
         System.out.println(hero.getName() + " \t\t\t\t\t"+ enemy.getName());
@@ -169,7 +169,11 @@ public class BattleManager {
     }
 
     /**
-     *
+     * Implements a normal attack simulation. Will exit if the {@link BattleManager#canEvade(Stats)}
+     * returns true. Attack damage is between the min damage and the max damage of the attacker. Damage is
+     * doubled if the {@link BattleManager#canCrit(Stats)} method returns true. Will also increase the
+     * the health of the attacker based on the lifesteal rate * damage. If health replenish is greater
+     * than the max health, the attacker's current health is set to the max health value.
      * @param attacker
      * @param victim
      */
@@ -189,22 +193,24 @@ public class BattleManager {
         Stats stat = attacker.getUnitStats();
         if (canCrit(stat)) {
             Sleep.sleep(1);
-            System.out.println(RED + "CRIT!!");
+            System.out.println(ANSI_RED + "CRIT!!");
             damage += damage;
         }
         Sleep.sleep(1);
 
         // decreases the victim's hp
         DamageHelper.doDamage(victim.getHealth(), damage);
-        System.out.println(PURPLE + damage + " damage" + BLACK);
+        System.out.println(ANSI_PURPLE + damage + " damage" + ANSI_BLACK);
 
-        //
-        int lsValue = stat.getStatValue(StatType.LIFESTEAL);
-        if (lsValue > 0) {
+
+        double lsValue = (double) stat.getStatValue(StatType.LIFESTEAL);
+        int currHealth = attacker.getHealth().getCurrentHealth();
+        int maxHealth = attacker.getHealth().getMaxHealth();
+        if (lsValue > 0 && currHealth < maxHealth) {
             Sleep.sleep(1);
-            double ls = damage * (lsValue / 100);
-            System.out.println(GREEN +ls + " lifesteal" + BLACK);
-            HealthHelper.heal(attacker.getHealth(), (int) ls);
+            int ls = (int) (damage * (lsValue / 100.0f));
+            System.out.println(ANSI_RESET + "lifesteal" + ANSI_BLACK);
+            HealthHelper.heal(attacker.getHealth(), ls);
         }
         Sleep.sleep(1);
     }
@@ -215,16 +221,11 @@ public class BattleManager {
      * @return
      */
     private boolean canCrit(Stats stats) {
-        if (RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.CRITICAL_CHANCE)) return true;
-        return false;
+        return RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.CRITICAL_CHANCE);
     }
 
     private boolean canEvade(Stats stats) {
-        if (RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.EVASION)) return true;
-        return false;
-    }
-
-    private void lifesteal(Stats stats, int damage) {
+        return  RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.EVASION);
     }
 
     /**

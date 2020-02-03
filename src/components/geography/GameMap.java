@@ -5,7 +5,7 @@ import misc.TextColor;
 
 import java.util.ArrayList;
 
-public class GameMap implements ShowMap, CheckAdjacentRoom, ReturnBossRoom {
+public class GameMap {
     private ArrayList<Room> openRooms;
     private Room heroLocation;
 
