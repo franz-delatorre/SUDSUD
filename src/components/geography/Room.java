@@ -4,13 +4,13 @@ import components.item.EquippableItem;
 import components.unit.Unit;
 import misc.Direction;
 
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 public class Room{
     private EquippableItem item;
     private String name;
-    private Map<Direction, Room> adjacentRoom = new HashMap<>();
+    private EnumMap<Direction, Room> adjacentRoom = new EnumMap<>(Direction.class);
     private Point point;
     private Unit enemy;
 
