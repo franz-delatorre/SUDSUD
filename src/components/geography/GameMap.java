@@ -63,7 +63,7 @@ public class GameMap {
         for (Room rm : openRooms) {
             Point rmPoint = rm.getPoint();
             xRange = getAxisRange(xRange, rmPoint.getxAxis());
-            yRange = getAxisRange(yRange, rmPoint.getxAxis());
+            yRange = getAxisRange(yRange, rmPoint.getyAxis());
         }
 
         System.out.println(TextColor.ANSI_RESET +  "=================================" + TextColor.ANSI_BLACK);

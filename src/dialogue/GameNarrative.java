@@ -26,9 +26,4 @@ public class GameNarrative {
     public void addNarrative(Room rm, Narrative nar) {
         gameNarrative.put(rm, nar);
     }
-
-    public boolean containsRoom(Room room) {
-        return gameNarrative.containsKey(room);
-    }
-
 }

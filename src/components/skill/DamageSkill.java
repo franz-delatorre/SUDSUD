@@ -1,7 +1,6 @@
 package components.skill;
 
 import components.Health;
-import components.skill.Skill;
 import components.unit.Unit;
 import misc.Broadcaster;
 import util.DamageHelper;

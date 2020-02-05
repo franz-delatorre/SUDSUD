@@ -1,4 +1,4 @@
-package game.engine;
+package service;
 
 import components.Health;
 import components.Stats;
@@ -17,7 +17,7 @@ import java.util.Scanner;
 import static misc.TextColor.*;
 import static util.Sleep.sleep;
 
-public class InventoryManager {
+public class InventoryService {
 
     private Inventory gameInventory = new Inventory();
     private Inventory heroInventory = new Inventory();
@@ -28,6 +28,8 @@ public class InventoryManager {
         return heroInventory.contains(item);
     }
 
+    public boolean gameInventoryContains(EquippableItem item) {return gameInventory.contains(item); }
+
     public void setHero(SkilledUnit hero) {
         this.hero = hero;
     }
@@ -37,11 +39,10 @@ public class InventoryManager {
     }
 
     /**
-     * Adds an item the the hero's inventory
+     * Adds an item to the hero's inventory
      * @param item
      */
     public void addItemToHeroInventory(EquippableItem item) {
-        if (!gameInventory.contains(item)) return;
         heroInventory.addItem(item);
         sleep(1);
         System.out.println(ANSI_GREEN + "You found an item" + ANSI_BLACK);
@@ -54,8 +55,8 @@ public class InventoryManager {
      * Opens the Inventory menu.
      */
     public void openInventoryMenu() {
-        showInventory();
-        showEquipment();
+        openHeroInventory();
+        openHeroEquippedItems();
         System.out.println();
         System.out.println("[E] Exit");
         System.out.println("[I] Inspect Item");
@@ -105,7 +106,7 @@ public class InventoryManager {
             if (s.getStatValue(statType) > 0 ) System.out.println(statType.toString() + ": +" + s.getStatValue(statType));
         }
         System.out.println(ANSI_BLACK);
-        showEquipment();
+        openHeroEquippedItems();
     }
 
     /**
@@ -152,14 +153,14 @@ public class InventoryManager {
             System.out.println(ANSI_GREEN + "Damage: +" + item.getDamage());
         }
         sleep(2);
-        showEquipment();
+        openHeroEquippedItems();
     }
 
     /**
      * Shows the current inventory of the hero.
      * @throws NullPointerException
      */
-    private void showInventory() throws NullPointerException {
+    private void openHeroInventory() {
         int index = 1;
         System.out.println();
         System.out.println(ANSI_BLACK + "===========================");
@@ -172,9 +173,9 @@ public class InventoryManager {
     }
 
     /**
-     * Shows the currently equippied items of the hero
+     * Shows the currently equipped items of the hero
      */
-    private void showEquipment() {
+    private void openHeroEquippedItems() {
 
         System.out.println(ANSI_BLACK + "===========================" + ANSI_CYAN);
         System.out.println("Equipment\n");

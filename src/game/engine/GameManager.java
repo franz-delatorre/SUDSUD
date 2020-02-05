@@ -10,23 +10,26 @@ import components.unit.Unit;
 import dialogue.GameNarrative;
 import dialogue.Narrative;
 import misc.*;
+import service.BattleService;
+import service.InventoryService;
 
 import java.util.Scanner;
 
 import static misc.TextColor.*;
 import static util.Sleep.sleep;
 
-public class GameManager implements GameCycle, GameOver {
+public class GameManager {
 
+    private static final int MAP_CHANGE = 3;
     private static final Scanner scanner = new Scanner(System.in);
 
     private boolean gameOver;
     private int progress;
-    private BattleManager bm;
+    private BattleService bs;
     private GameMap map;
     private GameMapProgress gameMapProgress;
     private GameNarrative gameNarrative;
-    private InventoryManager inventoryManager;
+    private InventoryService inventoryService;
     private Inventory heroInventory;
     private Room previousRoom;
     private Room secondLocation;
@@ -38,9 +41,9 @@ public class GameManager implements GameCycle, GameOver {
         gi.initialize();
 
         hero = gi.getHero();
-        bm = new BattleManager(hero);
+        bs = new BattleService(hero);
         finalBoss = gi.getFinalBoss();
-        inventoryManager = gi.getGameInventory();
+        inventoryService = gi.getInventoryService();
         gameMapProgress = gi.getGameMapProgress();
         gameOver = false;
         gameNarrative = gi.getGameNarrative();
@@ -57,7 +60,6 @@ public class GameManager implements GameCycle, GameOver {
     public void start() {
         checkRoomVariables();
         while (progressBossIsAlive()) {
-            if (gameOver) return;
             getUserAction();
         }
     }
@@ -67,7 +69,6 @@ public class GameManager implements GameCycle, GameOver {
      */
     private void getUserAction() {
         if (gameOver) return;
-
         System.out.println();
         System.out.println(ANSI_BLACK + "[I] Inventory");
         System.out.println("[C] Character");
@@ -77,10 +78,9 @@ public class GameManager implements GameCycle, GameOver {
 
         switch (opt) {
             case "i":
-                inventoryManager.openInventoryMenu();
+                inventoryService.openInventoryMenu();
                 break;
             case "m":
-                map.showMap();
                 move();
                 break;
             case "c":
@@ -109,6 +109,7 @@ public class GameManager implements GameCycle, GameOver {
      * it is not listed in the open rooms of the current map used.
      */
     private void move() {
+        map.showMap();
         System.out.println();
         System.out.println("[E] Exit map");
 
@@ -151,7 +152,6 @@ public class GameManager implements GameCycle, GameOver {
             map.setHeroLocation(rm.getAdjacentRoom(to));
 
             checkRoomVariables();
-            map.showMap();
             if (!finalBoss.isAlive()) {
                 gameOver = true;
                 return;
@@ -174,7 +174,7 @@ public class GameManager implements GameCycle, GameOver {
     private void checkRoomVariables() {
         getNarrative(0);
         checkForEnemy();
-        checkForItem();
+        checkRoomItem();
         getNarrative(1);
     }
 
@@ -195,18 +195,17 @@ public class GameManager implements GameCycle, GameOver {
      */
     private void raiseProgress() {
         // Will end the game if the final boss is slain
-        if (progress == gameMapProgress.size() - 1) {
+        if (progress == gameMapProgress.roomsOpenedSize() - 1) {
             Broadcaster.relayMissionAccomplished();
             gameOver = true;
             return;
         }
 
         // changes the location of the hero
-        if (progress == 2) {
+        map.setOpenRooms(gameMapProgress.getRoomsOpened(++progress));
+        if (progress == MAP_CHANGE) {
             map.setHeroLocation(secondLocation);
-            getNarrative(0);
         }
-        map.setOpenRooms(gameMapProgress.getOpenedRooms(++progress));
     }
 
     /**
@@ -258,11 +257,16 @@ public class GameManager implements GameCycle, GameOver {
         System.out.printf("\n" + ANSI_BLACK);
     }
 
-    private void checkForItem() {
+    private void checkRoomItem() {
         Room room = map.getHeroLocation();
         EquippableItem item = room.getItem();
-        if (inventoryManager.heroInventoryContains(item)) return;
-        inventoryManager.addItemToHeroInventory(item);
+
+        // Checks if the item exists in the game inventory
+        if (!inventoryService.gameInventoryContains(item)) return;
+
+        //Checks if the item is already in the hero's inventory
+        if (inventoryService.heroInventoryContains(item)) return;
+        inventoryService.addItemToHeroInventory(item);
     }
 
     /**
@@ -271,22 +275,16 @@ public class GameManager implements GameCycle, GameOver {
     private void checkForEnemy() {
         Room room = map.getHeroLocation();
         Unit enemy = room.getEnemy();
-        // Checks if the room has an enemy
-        if (enemy == null) {
-            checkForItem();
-            return;
-        }
 
         //Checks if the enemy is still alive
         if (enemy.isAlive()) {
-            bm.setEnemy(enemy);
             sleep(1);
             System.out.println(ANSI_RED + "There is an enemy in the room prepare for battle" + ANSI_BLACK);
             sleep(1);
 
             //Will check who wins the battle. returns 1 if the player wins and
             // returns zero if otherwise.
-            if (bm.toBattle() > 0) {
+            if (bs.toBattle(enemy) > 0) {
                 System.out.println("You have slain " + ANSI_GREEN + enemy.getName() + ANSI_BLACK);
                 System.out.println();
                 checkBossIsAlive();

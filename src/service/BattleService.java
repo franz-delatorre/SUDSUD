@@ -1,4 +1,4 @@
-package game.engine;
+package service;
 
 import components.Stats;
 import components.skill.Skill;
@@ -16,27 +16,25 @@ import static misc.TextColor.ANSI_RED;
 import static misc.TextColor.ANSI_PURPLE;
 import static misc.TextColor.ANSI_RESET;
 
-public class BattleManager {
+public class BattleService {
     private static final Scanner scanner = new Scanner(System.in);
 
     private SkilledUnit hero;
     private Unit enemy;
 
-    public BattleManager(SkilledUnit hero) {
+    public BattleService(SkilledUnit hero) {
         this.hero = hero;
-    }
-
-    public void setEnemy(Unit enemy) {
-        this.enemy = enemy;
     }
 
     /**
      * Enables the unit to mimic a battle. Player and computer will take turns
      * in during the battle. If one of the units currentHealth reaches to 0 the
-     * battle will end. Returns 1 if the player wins, and 0 if otherwise.
-     * @return
+     * battle will end.
+     *
+     * @return 1 if the player wins, and 0 if otherwise.
      */
-    public int toBattle() {
+    public int toBattle(Unit enemyUnit) {
+        enemy = enemyUnit;
         setHealth();
         setCooldown();
 
@@ -69,7 +67,7 @@ public class BattleManager {
     private void decrementCooldown() {
         Skill heroSkill = hero.getSkill();
         if (heroSkill.getCooldown() > 0) heroSkill.setCooldown(heroSkill.getCooldown() - 1);
-        if (enemy.getClass() == SkilledUnit.class) {
+        if (enemy instanceof SkilledUnit) {
             Skill enemySkill = ((SkilledUnit) enemy).getSkill();
             if (enemySkill.getCooldown() > 0) enemySkill.setCooldown(enemySkill.getCooldown() - 1);
         }
@@ -149,10 +147,7 @@ public class BattleManager {
      * @return
      */
     private boolean fightersStillAlive() {
-        int heroCurrHealth = hero.getCurrentHealth();
-        int enemyCurrHealth = enemy.getCurrentHealth();
-        if (heroCurrHealth > 0 && enemyCurrHealth > 0) return true;
-        return false;
+        return hero.isAlive() && enemy.isAlive();
     }
 
     /**
@@ -161,17 +156,14 @@ public class BattleManager {
      * @return
      */
     private int winner() {
-        if (enemy.getCurrentHealth() <= 0 ) {
-            enemy.setIsAlive(false);
-            return 1;
-        }
+        if (hero.isAlive()) return 1;
         return 0;
     }
 
     /**
-     * Implements a normal attack simulation. Will exit if the {@link BattleManager#canEvade(Stats)}
+     * Implements a normal attack simulation. Will exit if the {@link BattleService#canEvade(Stats)}
      * returns true. Attack damage is between the min damage and the max damage of the attacker. Damage is
-     * doubled if the {@link BattleManager#canCrit(Stats)} method returns true. Will also increase the
+     * doubled if the {@link BattleService#canCrit(Stats)} method returns true. Will also increase the
      * the health of the attacker based on the lifesteal rate * damage. If health replenish is greater
      * than the max health, the attacker's current health is set to the max health value.
      * @param attacker
@@ -201,7 +193,6 @@ public class BattleManager {
         // decreases the victim's hp
         DamageHelper.doDamage(victim.getHealth(), damage);
         System.out.println(ANSI_PURPLE + damage + " damage" + ANSI_BLACK);
-
 
         double lsValue = (double) stat.getStatValue(StatType.LIFESTEAL);
         int currHealth = attacker.getHealth().getCurrentHealth();
@@ -235,8 +226,9 @@ public class BattleManager {
      */
     private void enemyAI() {
         //Checks if the enemy have a skill
-        if (enemy.getClass() == SkilledUnit.class) {
-            Skill skill = ((SkilledUnit) enemy).getSkill();
+        if (enemy instanceof SkilledUnit) {
+            SkilledUnit unit = (SkilledUnit) enemy;
+            Skill skill = unit.getSkill();
             if (skill.getCooldown() <= 0) {
                 useSkill((SkilledUnit) enemy, hero);
             } else {

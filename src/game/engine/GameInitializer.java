@@ -12,19 +12,20 @@ import dialogue.GameNarrative;
 import dialogue.Narrative;
 import misc.Direction;
 import misc.EquipmentType;
+import service.InventoryService;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
-public class GameInitializer implements Initializer {
+public class GameInitializer {
     private Map<String, Unit> units = new HashMap<>();
     private Map<String, EquippableItem> items = new HashMap<>();
     private Map<String, Narrative> narrativeList = new HashMap<>();
     private GameMap gameMap;
     private GameMapProgress gameMapProgress = new GameMapProgress();
     private GameNarrative gameNarrative = new GameNarrative();
-    private InventoryManager gameInventory = new InventoryManager();
+    private InventoryService inventoryService = new InventoryService();
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
@@ -53,8 +54,8 @@ public class GameInitializer implements Initializer {
         return hero;
     }
 
-    public InventoryManager getGameInventory() {
-        return gameInventory;
+    public InventoryService getInventoryService() {
+        return inventoryService;
     }
 
     public void initialize() {
@@ -70,8 +71,7 @@ public class GameInitializer implements Initializer {
      * enemy within the room. Will also set the game progress for each map. Game Progress
      * is used to open the other rooms in the map once the boss is slain.
      */
-    @Override
-    public void setupRooms() {
+    private void setupRooms() {
         // Rooms of the first map
         Room hallwayOne = new Room("Hallway One", new Point(0, -1));
         Room hallwayTwo = new Room("Hallway Two", new Point(0, 0));
@@ -183,7 +183,7 @@ public class GameInitializer implements Initializer {
         gameMapProgress.addRoomsOpened(progressFive);
         gameMapProgress.addRoomsOpened(progressSix);
 
-        gameMap = new GameMap(gameMapProgress.getOpenedRooms(0), hallwayOne);
+        gameMap = new GameMap(gameMapProgress.getRoomsOpened(0), hallwayOne);
         secondLocation = masterBedroom_2;
     }
 
@@ -191,8 +191,7 @@ public class GameInitializer implements Initializer {
      * Will setup the skills first then create the units and bind the skills for
      * each unit.
      */
-    @Override
-    public void setupUnits() {
+    private void setupUnits() {
 
         // == Construction of Skills ==
         HealSkill lesserHeal = new HealSkill("Lesser Heal");
@@ -355,8 +354,7 @@ public class GameInitializer implements Initializer {
     }
 
     //Sets up the items in the game then saves it in an inventory named gameInventory
-    @Override
-    public void setupItems() {
+    private void setupItems() {
         EquippableItem commonSword = new EquippableItem.Builder()
                 .name("Common Sword")
                 .evasion(5)
@@ -433,23 +431,22 @@ public class GameInitializer implements Initializer {
         items.put("talisman", talisman);
         items.put("talismanEvasion", talismanEvasion);
 
-        gameInventory.addItemToGameInventory(commonSword);
-        gameInventory.addItemToGameInventory(rareSword);
-        gameInventory.addItemToGameInventory(rapier);
-        gameInventory.addItemToGameInventory(chainMail);
-        gameInventory.addItemToGameInventory(breastPlate);
-        gameInventory.addItemToGameInventory(kevlar);
-        gameInventory.addItemToGameInventory(redMoon);
-        gameInventory.addItemToGameInventory(talisman);
-        gameInventory.addItemToGameInventory(talismanEvasion);
-        gameInventory.setHero(hero);
+        inventoryService.addItemToGameInventory(commonSword);
+        inventoryService.addItemToGameInventory(rareSword);
+        inventoryService.addItemToGameInventory(rapier);
+        inventoryService.addItemToGameInventory(chainMail);
+        inventoryService.addItemToGameInventory(breastPlate);
+        inventoryService.addItemToGameInventory(kevlar);
+        inventoryService.addItemToGameInventory(redMoon);
+        inventoryService.addItemToGameInventory(talisman);
+        inventoryService.addItemToGameInventory(talismanEvasion);
+        inventoryService.setHero(hero);
     }
 
     /**
      * Sets up the game dialogue for each progress.
      */
-    @Override
-    public void setupDialogue() {
+    private void setupDialogue() {
 
         // Sets the String array of each progress/room.
         String[] nullNarrative = new String[] {};

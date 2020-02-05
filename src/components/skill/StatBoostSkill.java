@@ -5,13 +5,12 @@ import components.unit.Unit;
 import util.StatHelper;
 import misc.StatType;
 
-public class StatBoostSkill extends Booster {
+public class StatBoostSkill extends Skill {
     private Stats skillStats;
 
     public static class Builder {
         private String name;
         private Stats skillStats = new Stats();
-        private int duration;
 
         public Builder(String name){
             this.name = name;
@@ -32,11 +31,6 @@ public class StatBoostSkill extends Booster {
             return this;
         }
 
-        public Builder duration(int value) {
-            duration = value;
-            return this;
-        }
-
         public StatBoostSkill build() {
             return new StatBoostSkill(this);
         }
@@ -45,7 +39,6 @@ public class StatBoostSkill extends Booster {
     private StatBoostSkill(Builder builder) {
         skillStats = builder.skillStats;
         setName(builder.name);
-        setDuration(builder.duration);
     }
 
     /**
@@ -62,7 +55,6 @@ public class StatBoostSkill extends Booster {
      * Debuffs the user's stats if the limited turn is over.
      * @param unit
      */
-    @Override
     public void skillAfterEffect(Unit unit) {
         StatHelper.decreaseStats(unit.getUnitStats(), this.skillStats);
     }

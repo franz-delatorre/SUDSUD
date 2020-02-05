@@ -5,14 +5,12 @@ import misc.StatType;
 
 public abstract class Item {
     private String name;
-    private String description;
     private Stats itemStats;
     private int healthBoost;
     private int damage;
 
     public static abstract class Builder<T> {
         private String name;
-        private String description;
         private Stats itemStats;
         private int healthBoost;
         private int damage;
@@ -21,11 +19,6 @@ public abstract class Item {
             itemStats = new Stats();
             damage = 0;
             healthBoost = 0;
-        }
-
-        public T description(String desc) {
-            this.description = desc;
-            return self();
         }
 
         public T healthBoost(int value) {
@@ -84,25 +77,5 @@ public abstract class Item {
 
     public String getName() {
         return name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    protected void setName(String name) {
-        this.name = name;
-    }
-
-    protected void setItemStats(Stats itemStats) {
-        this.itemStats = itemStats;
-    }
-
-    protected void setDamage(int damage) {
-        this.damage = damage;
-    }
-
-    protected void setHealthBoost(int healthBoost) {
-        this.healthBoost = healthBoost;
     }
 }

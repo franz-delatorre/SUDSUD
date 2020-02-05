@@ -3,6 +3,7 @@ package components;
 public class Health {
     private int maxHealth;
     private int currentHealth;
+    private boolean isAlive;
 
     public Health(int health) {
         this.maxHealth     = health;
@@ -17,14 +18,6 @@ public class Health {
         this.maxHealth = maxHealth;
     }
 
-    public void takeDamage(int damage) {
-        if (currentHealth - damage < 0) {
-            currentHealth = 0;
-            return;
-        }
-        currentHealth -= damage;
-    }
-
     public void increaseCurrentHealth(int hpValue) {
         if (currentHealth + hpValue > maxHealth) currentHealth = maxHealth;
         else currentHealth += hpValue;
@@ -33,6 +26,10 @@ public class Health {
     public void decreaseCurrentHealth(int hpValue) {
         if (currentHealth - hpValue < 0) currentHealth = 0;
         else currentHealth -= hpValue;
+    }
+
+    public boolean isAlive() {
+        return currentHealth > 0;
     }
 
     public int getCurrentHealth() {

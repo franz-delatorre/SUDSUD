@@ -14,11 +14,11 @@ public class GameMapProgress {
         roomsOpened.add(rooms);
     }
 
-    public ArrayList<Room> getOpenedRooms(int index) {
+    public ArrayList<Room> getRoomsOpened(int index) {
         return roomsOpened.get(index);
     }
 
-    public int size() {
+    public int roomsOpenedSize() {
         return roomsOpened.size();
     }
 }

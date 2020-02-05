@@ -1,13 +1,12 @@
 package game.engine;
 
-public class GameEngine implements GameCycle {
+public class GameEngine {
     private GameManager gameManager;
 
     public GameEngine() {
         gameManager = new GameManager();
     }
 
-    @Override
     public void start() {
         while (!gameManager.gameIsOver()) {
             gameManager.start();

@@ -11,13 +11,12 @@ public final class DamageHelper {
      * @return
      */
     public static int damageOutput(int minDamage, int maxDamage) {
-        int damage = (int) (Math.random() * ((maxDamage - minDamage) + 1)) + minDamage;
-        return damage;
+        return (int) (Math.random() * ((maxDamage - minDamage) + 1)) + minDamage;
     }
 
     /**
-     * Decreases the current health by the damage given. If the damage
-     * is < 0 the current health is set to 0.
+     * Decreases the current health by the damage given. If the currentHealth - damage
+     * is < 0 the currentHealth is set to 0.
      * @param health
      * @param damage
      */

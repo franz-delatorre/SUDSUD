@@ -15,10 +15,6 @@ public class Broadcaster {
         System.out.println(ANSI_GREEN + heal + " heal" + ANSI_BLACK);
     }
 
-    public static void relayLifesteal(int ls) {
-        System.out.println(ANSI_GREEN + ls + " health is replenished" + ANSI_BLACK);
-    }
-
     public static void relayBuff(Stats stats) {
         for (StatType statType: StatType.values()) {
             if (stats.getStatValue(statType) > 0) {
