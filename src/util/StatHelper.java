@@ -31,5 +31,6 @@ public final class StatHelper {
         for (StatType statType: StatType.values()) {
             mainStats.decreaseStat(statType, subStats.getStatValue(statType));
         }
+        Broadcaster.relayDebuff(subStats);
     }
 }

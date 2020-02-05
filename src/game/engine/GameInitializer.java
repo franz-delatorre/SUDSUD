@@ -220,8 +220,8 @@ public class GameInitializer {
         //Hero of the game
         SkilledUnit alucard = new SkilledUnit.Builder()
                 .name("Alucard")
-                .health(200)
-                .damage(2000)
+                .health(115)
+                .damage(15)
                 .lifesteal(20)
                 .criticalChance(5)
                 .evasion(0)

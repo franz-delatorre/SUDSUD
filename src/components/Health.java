@@ -3,10 +3,9 @@ package components;
 public class Health {
     private int maxHealth;
     private int currentHealth;
-    private boolean isAlive;
 
     public Health(int health) {
-        this.maxHealth     = health;
+        this.maxHealth = health;
         this.currentHealth = health;
     }
 

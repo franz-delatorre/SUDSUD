@@ -8,8 +8,6 @@ public class GameEngine {
     }
 
     public void start() {
-        while (!gameManager.gameIsOver()) {
-            gameManager.start();
-        }
+        gameManager.start();
     }
 }

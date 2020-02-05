@@ -14,7 +14,6 @@ public class GameMap {
         this.heroLocation = heroLocation;
     }
 
-
     public void setHeroLocation(Room heroLocation) {
         this.heroLocation = heroLocation;
     }

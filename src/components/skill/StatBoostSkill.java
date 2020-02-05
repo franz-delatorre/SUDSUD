@@ -7,9 +7,11 @@ import misc.StatType;
 
 public class StatBoostSkill extends Skill {
     private Stats skillStats;
+    private int duration;
 
     public static class Builder {
         private String name;
+        private int duration;
         private Stats skillStats = new Stats();
 
         public Builder(String name){
@@ -31,6 +33,11 @@ public class StatBoostSkill extends Skill {
             return this;
         }
 
+        public Builder duration(int duration) {
+            this.duration = duration;
+            return this;
+        }
+
         public StatBoostSkill build() {
             return new StatBoostSkill(this);
         }
@@ -38,7 +45,20 @@ public class StatBoostSkill extends Skill {
 
     private StatBoostSkill(Builder builder) {
         skillStats = builder.skillStats;
+        duration = builder.duration;
         setName(builder.name);
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
+    public void decreaseDuration() {
+        duration--;
     }
 
     /**
@@ -48,6 +68,7 @@ public class StatBoostSkill extends Skill {
      */
     @Override
     public void skillEffect(Unit user, Unit victim) {
+        duration = 2;
         StatHelper.increaseStats(user.getUnitStats(), this.skillStats);
     }
 

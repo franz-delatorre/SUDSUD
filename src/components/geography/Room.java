@@ -5,7 +5,6 @@ import components.unit.Unit;
 import misc.Direction;
 
 import java.util.EnumMap;
-import java.util.Map;
 
 public class Room{
     private EquippableItem item;
@@ -33,10 +32,6 @@ public class Room{
 
     public Unit getEnemy() {
         return enemy;
-    }
-
-    public Map<Direction, Room> getAdjacentRoom() {
-        return adjacentRoom;
     }
 
     public Room clone(){

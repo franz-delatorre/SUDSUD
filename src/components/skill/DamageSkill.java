@@ -30,7 +30,6 @@ public class DamageSkill extends Skill {
     @Override
     public void skillEffect(Unit user, Unit victim) {
         Health victimHealth  = victim.getHealth();
-        int victimCurrHealth = victimHealth.getCurrentHealth();
         DamageHelper.doDamage(victimHealth, damage);
         Broadcaster.relayDamage(damage);
     }

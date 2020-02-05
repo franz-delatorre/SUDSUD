@@ -2,6 +2,7 @@ package service;
 
 import components.Stats;
 import components.skill.Skill;
+import components.skill.StatBoostSkill;
 import components.unit.SkilledUnit;
 import components.unit.Unit;
 import misc.StatType;
@@ -54,6 +55,8 @@ public class BattleService {
             Sleep.sleep(1);
             printHealth();
             decrementCooldown();
+            checkActiveBoostSkill(hero);
+            checkActiveBoostSkill(enemy);
             System.out.println(ANSI_BLUE + " - END OF TURN " + turn++ + " - " + ANSI_BLACK);
             System.out.println("__________________________________");
             Sleep.sleep(1);
@@ -74,11 +77,16 @@ public class BattleService {
     }
 
     /**
-     * Sets both units skill cooldown to 3 turns.
+     * Sets both units skill cooldown to 3 turns. If the skill is an instance of
+     * StatBoostSkill then the cooldown is set to 6.
      */
     private void setCooldown() {
-        hero.getSkill().setCooldown(3);
-        if (enemy.getClass() == SkilledUnit.class) ((SkilledUnit) enemy).getSkill().setCooldown(3);
+        Skill heroSkill = hero.getSkill();
+        heroSkill.setCooldown(2);
+        if (enemy instanceof SkilledUnit) {
+            Skill enemySkill = ((SkilledUnit) enemy).getSkill();
+            enemySkill.setCooldown(2);
+        }
     }
 
     /**
@@ -115,6 +123,7 @@ public class BattleService {
     private void useSkill(SkilledUnit user, Unit victim) {
         Skill skill = user.getSkill();
         System.out.println(ANSI_CYAN + user.getName() + " used " + skill.getName() + ANSI_BLACK);
+        SkillHelper.useSkill(user, victim);
         SkillHelper.useSkill(user, victim);
     }
 
@@ -212,11 +221,11 @@ public class BattleService {
      * @return
      */
     private boolean canCrit(Stats stats) {
-        return RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.CRITICAL_CHANCE);
+        return NumberGenerator.getRandomInt(100) <= stats.getStatValue(StatType.CRITICAL_CHANCE);
     }
 
     private boolean canEvade(Stats stats) {
-        return  RandomGenerator.getRandomInt(100) <= stats.getStatValue(StatType.EVASION);
+        return  NumberGenerator.getRandomInt(100) <= stats.getStatValue(StatType.EVASION);
     }
 
     /**
@@ -237,5 +246,35 @@ public class BattleService {
             return;
         }
         normalAttack(enemy,hero);
+    }
+
+    /**
+     * Checks if there's a boost currently active for the unit. Active boost gets decremented if
+     * duration is > 0.
+     */
+    private void checkActiveBoostSkill(Unit unit) {
+        if (!(unit instanceof SkilledUnit)) return;
+
+        SkilledUnit skilledUnit = (SkilledUnit) unit;
+        Skill skill = skilledUnit.getSkill();
+
+        if (skill instanceof StatBoostSkill) {
+            StatBoostSkill sb = (StatBoostSkill) skill;
+            if (sb.getDuration() > 0) decrementBoostDuration(sb, unit);
+        }
+    }
+
+    /**
+     * Decrements the boost by 1. If the duration is equal to 0, {@link StatBoostSkill#skillAfterEffect(Unit)}
+     * is called and sets the duration to 2.
+     * @param skill
+     * @param unit
+     */
+    private void decrementBoostDuration(StatBoostSkill skill, Unit unit) {
+        skill.decreaseDuration();
+        if (skill.getDuration() == 0) {
+            skill.skillAfterEffect(unit);
+        }
+        System.out.println(skill.getDuration() + "DURATION");
     }
 }

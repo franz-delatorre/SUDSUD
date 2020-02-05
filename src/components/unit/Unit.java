@@ -17,7 +17,7 @@ public abstract class Unit {
         private Stats unitStats;
 
         public Builder(){
-            damage    = 0;
+            damage = 0;
             unitStats = new Stats();
         }
 
@@ -41,8 +41,8 @@ public abstract class Unit {
             return self();
         }
 
-        public T health(int health) {
-            this.health = new Health(health);
+        public T health(int hpValue) {
+            health = new Health(hpValue);
             return self();
         }
 

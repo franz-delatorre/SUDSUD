@@ -1,7 +1,6 @@
 package components.skill;
 
 import components.Health;
-import components.skill.Skill;
 import components.unit.Unit;
 import misc.Broadcaster;
 
@@ -26,9 +25,9 @@ public class HealSkill extends Skill {
      */
     @Override
     public void skillEffect(Unit user, Unit victim) {
-        int userMaxHealth     = user.getHealth().getMaxHealth();
+        int userMaxHealth = user.getHealth().getMaxHealth();
         int userCurrentHealth = user.getHealth().getCurrentHealth();
-        Health userhealth     = user.getHealth();
+        Health userhealth = user.getHealth();
 
         if (userCurrentHealth + heal > userMaxHealth) {
             userhealth.setCurrentHealth(userMaxHealth);

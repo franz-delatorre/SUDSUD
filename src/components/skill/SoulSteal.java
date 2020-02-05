@@ -11,7 +11,7 @@ public class SoulSteal extends Skill {
     }
 
     /**
-     * Deals 2 x the maximum damage of the user and heals the user
+     * Deals 2 times the maximum damage of the user and heals the user
      * for the same amount of the damage output.
      * @param user
      * @param victim

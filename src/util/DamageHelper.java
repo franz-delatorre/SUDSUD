@@ -21,12 +21,6 @@ public final class DamageHelper {
      * @param damage
      */
     public static void doDamage(Health health, int damage) {
-        int ch = health.getCurrentHealth();
-
-        if (ch - damage < 0 ) {
-            health.setCurrentHealth(0);
-        } else {
-            health.setCurrentHealth(ch - damage);
-        }
+        health.decreaseCurrentHealth(damage);
     }
 }

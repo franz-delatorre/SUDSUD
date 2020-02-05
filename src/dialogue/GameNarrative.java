@@ -7,7 +7,6 @@ import java.util.Map;
 
 public class GameNarrative {
     private Map<Room, Narrative> gameNarrative = new HashMap<>();
-    private boolean isNarrated = false;
 
     public GameNarrative() {
 
@@ -15,7 +14,6 @@ public class GameNarrative {
 
     private GameNarrative(Room room) {
         gameNarrative.put(room, new Narrative());
-        isNarrated = true;
     }
 
     public Narrative getNarrative(Room room) {

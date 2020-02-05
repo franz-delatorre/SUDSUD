@@ -58,7 +58,8 @@ public class GameManager {
      * will increment if the current progress boss is slain.
      */
     public void start() {
-        checkRoomVariables();
+        getNarrative(0);
+        getNarrative(1);
         while (progressBossIsAlive()) {
             getUserAction();
         }
@@ -178,10 +179,6 @@ public class GameManager {
         getNarrative(1);
     }
 
-    public boolean gameIsOver() {
-        return gameOver;
-    }
-
     /**
      * Checks if the boss of the current progress is still alive
      */
@@ -257,6 +254,10 @@ public class GameManager {
         System.out.printf("\n" + ANSI_BLACK);
     }
 
+    /**
+     * Checks the item variable of the room. The block exits if the item is not in the game Inventory.
+     * Also exits if the item already exist in the hero's inventory
+     */
     private void checkRoomItem() {
         Room room = map.getHeroLocation();
         EquippableItem item = room.getItem();
@@ -270,33 +271,36 @@ public class GameManager {
     }
 
     /**
-     * Checks for an enemy. A battle will ensue if an enemy exist and then enemy is Alive.
+     * Checks for an enemy in the room, a battle will ensue if an enemy exist and if the enemy is Alive.
      */
     private void checkForEnemy() {
         Room room = map.getHeroLocation();
         Unit enemy = room.getEnemy();
 
-        //Checks if the enemy is still alive
-        if (enemy.isAlive()) {
-            sleep(1);
-            System.out.println(ANSI_RED + "There is an enemy in the room prepare for battle" + ANSI_BLACK);
-            sleep(1);
+        try {
+            //Checks if the enemy is still alive
+            if (enemy.isAlive()) {
+                sleep(1);
+                System.out.println(ANSI_RED + "There is an enemy in the room prepare for battle" + ANSI_BLACK);
+                sleep(1);
 
-            //Will check who wins the battle. returns 1 if the player wins and
-            // returns zero if otherwise.
-            if (bs.toBattle(enemy) > 0) {
-                System.out.println("You have slain " + ANSI_GREEN + enemy.getName() + ANSI_BLACK);
-                System.out.println();
-                checkBossIsAlive();
-            } else {
-                System.out.println(ANSI_RED + enemy.getName() + " has slain you" + ANSI_BLACK);
-                System.out.println();
-                if (fightAgain()) {
-                    checkRoomVariables();
+                // Will check who wins the battle. returns 1 if the player wins and returns zero if otherwise.
+                if (bs.toBattle(enemy) > 0) {
+                    System.out.println("You have slain " + ANSI_GREEN + enemy.getName() + ANSI_BLACK);
+                    System.out.println();
+                    checkBossIsAlive();
                 } else {
-                    map.setHeroLocation(previousRoom);
+                    System.out.println(ANSI_RED + enemy.getName() + " has slain you" + ANSI_BLACK);
+                    System.out.println();
+                    if (fightAgain()) {
+                        checkRoomVariables();
+                    } else {
+                        map.setHeroLocation(previousRoom);
+                    }
                 }
             }
+        } catch (NullPointerException e) {
+            return;
         }
     }
 
@@ -314,11 +318,11 @@ public class GameManager {
 
         String[] strings = n.getNarrative(index);
         for (String s : strings) {
-//                sleep(3);
+                sleep(3);
             System.out.println(ANSI_BLUE + s);
         }
         System.out.println(ANSI_BLACK);
-//        sleep(1);
+        sleep(1);
 
         if (index > 0 ) {
             n.setNarrated(true);
