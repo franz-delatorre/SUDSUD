@@ -203,8 +203,8 @@ public class GameManager implements GameCycle, GameOver {
 
         // changes the location of the hero
         if (progress == 2) {
-            getNarrative(0);
             map.setHeroLocation(secondLocation);
+            getNarrative(0);
         }
         map.setOpenRooms(gameMapProgress.getOpenedRooms(++progress));
     }
@@ -310,25 +310,17 @@ public class GameManager implements GameCycle, GameOver {
         Room r = map.getHeroLocation();
         Narrative n = gameNarrative.getNarrative(r);
 
-        try {
-            if (n.isNarrated()) {
-                return;
-            }
-        } catch (NullPointerException e) {
+        if (n.isNarrated()) {
             return;
         }
 
-        try {
-            String[] strings = n.getStrings(index);
-            for (String s : strings) {
-                sleep(3);
-                System.out.println(ANSI_BLUE + s);
-            }
-        } catch (NullPointerException e) {
-
+        String[] strings = n.getNarrative(index);
+        for (String s : strings) {
+//                sleep(3);
+            System.out.println(ANSI_BLUE + s);
         }
         System.out.println(ANSI_BLACK);
-        sleep(1);
+//        sleep(1);
 
         if (index > 0 ) {
             n.setNarrated(true);

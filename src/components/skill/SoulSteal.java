@@ -1,4 +1,4 @@
-package components.skill.list;
+package components.skill;
 
 import components.skill.Skill;
 import components.unit.Unit;

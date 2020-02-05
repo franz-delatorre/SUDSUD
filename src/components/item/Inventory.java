@@ -14,7 +14,7 @@ public class Inventory {
         return inventory;
     }
 
-    public EquippableItem getItem(int index) throws IndexOutOfBoundsException{
+    public EquippableItem getItem(int index){
         if (index > inventory.size()) {
             return null;
         }

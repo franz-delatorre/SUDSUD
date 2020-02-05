@@ -6,17 +6,17 @@ public class Narrative {
     private ArrayList<String[]> narrative = new ArrayList<>(2);
     private boolean isNarrated = false;
 
+    public Narrative() {
+        narrative.add(new String[] {});
+    }
+
     public void addNarrative(String[] s) {
         narrative.add(s);
     }
 
-    public String[] getStrings(int index) {
-        if (narrative.size() == 1) {
-            return narrative.get(0);
-        }
-
-        if (index > 1 || narrative.get(index) == null) {
-            return null;
+    public String[] getNarrative(int index) {
+        if (index > narrative.size() - 1) {
+            return new Narrative().getNarrative(0);
         }
         return narrative.get(index);
     }

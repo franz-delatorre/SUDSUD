@@ -6,7 +6,7 @@ import java.util.EnumMap;
 import java.util.Map;
 
 public class Stats {
-    private Map<StatType, Integer> stats = new EnumMap<StatType, Integer>(StatType.class);
+    private Map<StatType, Integer> stats = new EnumMap<>(StatType.class);
 
     public Stats() {
         stats.put(StatType.EVASION, 0);

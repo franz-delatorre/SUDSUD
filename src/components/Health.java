@@ -22,8 +22,17 @@ public class Health {
             currentHealth = 0;
             return;
         }
-
         currentHealth -= damage;
+    }
+
+    public void increaseCurrentHealth(int hpValue) {
+        if (currentHealth + hpValue > maxHealth) currentHealth = maxHealth;
+        else currentHealth += hpValue;
+    }
+
+    public void decreaseCurrentHealth(int hpValue) {
+        if (currentHealth - hpValue < 0) currentHealth = 0;
+        else currentHealth -= hpValue;
     }
 
     public int getCurrentHealth() {
@@ -32,9 +41,5 @@ public class Health {
 
     public void setCurrentHealth(int currentHealth) {
         this.currentHealth = currentHealth;
-    }
-
-    public Health clone() {
-        return new Health(maxHealth);
     }
 }

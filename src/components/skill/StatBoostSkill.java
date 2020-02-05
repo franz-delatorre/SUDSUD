@@ -1,7 +1,6 @@
-package components.skill.list;
+package components.skill;
 
 import components.Stats;
-import components.skill.Booster;
 import components.unit.Unit;
 import util.StatHelper;
 import misc.StatType;

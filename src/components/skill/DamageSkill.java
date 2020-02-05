@@ -1,4 +1,4 @@
-package components.skill.list;
+package components.skill;
 
 import components.Health;
 import components.skill.Skill;
