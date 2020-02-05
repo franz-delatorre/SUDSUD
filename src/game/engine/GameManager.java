@@ -206,7 +206,7 @@ public class GameManager implements GameCycle, GameOver {
             getNarrative(0);
             map.setHeroLocation(secondLocation);
         }
-        map.setGameMap(gameMapProgress.getOpenedRooms(++progress));
+        map.setOpenRooms(gameMapProgress.getOpenedRooms(++progress));
     }
 
     /**

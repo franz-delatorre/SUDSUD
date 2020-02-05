@@ -19,7 +19,7 @@ public class GameMap {
         this.heroLocation = heroLocation;
     }
 
-    public void setGameMap(ArrayList<Room> newRoom) {
+    public void setOpenRooms(ArrayList<Room> newRoom) {
         openRooms = newRoom;
     }
 
@@ -30,7 +30,7 @@ public class GameMap {
     /**
      * Boss room should be the last room added to the openRooms. This limit should be done during
      * the construction of the rooms and setting the game map using the 
-     * {@link GameMap#setGameMap(ArrayList) method.
+     * {@link GameMap#setOpenRooms(ArrayList) method.
      * @return
      */
     public Room getBossRoom() {
@@ -46,8 +46,7 @@ public class GameMap {
      */
     public boolean canMoveToAdjacentRoom (Direction to, Room room) {
         Room adjRm = room.getAdjacentRoom(to);
-        if (openRooms.contains(adjRm)) return true;
-        return false;
+        return openRooms.contains(adjRm);
     }
 
     /**
@@ -61,10 +60,10 @@ public class GameMap {
         int[] yRange = {0, 0};
 
         //Sets the x and y axis range of the map.
-        for (int it = 0; it < openRooms.size(); it++) {
-            Point rmPoint = openRooms.get(it).getPoint();
+        for (Room rm : openRooms) {
+            Point rmPoint = rm.getPoint();
             xRange = getAxisRange(xRange, rmPoint.getxAxis());
-            yRange = getAxisRange(yRange, rmPoint.getyAxis());
+            yRange = getAxisRange(yRange, rmPoint.getxAxis());
         }
 
         System.out.println(TextColor.ANSI_RESET +  "=================================" + TextColor.ANSI_BLACK);
