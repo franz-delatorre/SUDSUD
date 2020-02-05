@@ -5,14 +5,14 @@ import components.unit.Unit;
 import misc.Broadcaster;
 
 public class HealSkill extends Skill {
-    private int heal;
+    private int healValue;
 
     public HealSkill(String name) {
         setName(name);
     }
 
-    public void setHeal(int heal) {
-        this.heal = heal;
+    public void setHealValue(int healValue) {
+        this.healValue = healValue;
     }
 
     /**
@@ -29,13 +29,13 @@ public class HealSkill extends Skill {
         int userCurrentHealth = user.getHealth().getCurrentHealth();
         Health userhealth = user.getHealth();
 
-        if (userCurrentHealth + heal > userMaxHealth) {
+        if (userCurrentHealth + healValue > userMaxHealth) {
             userhealth.setCurrentHealth(userMaxHealth);
             Broadcaster.relayHeal(userMaxHealth - userCurrentHealth);
         } else {
-            int totalHeal = userCurrentHealth + heal;
+            int totalHeal = userCurrentHealth + healValue;
             userhealth.setCurrentHealth(totalHeal);
-            Broadcaster.relayHeal(heal);
+            Broadcaster.relayHeal(healValue);
         }
     }
 }

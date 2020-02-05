@@ -212,8 +212,8 @@ public class GameInitializer {
                 .lifesteal(10)
                 .duration(5)
                 .build();
-        heal.setHeal(60);
-        lesserHeal.setHeal(30);
+        heal.setHealValue(60);
+        lesserHeal.setHealValue(30);
 
         // == Construction of units ==
 
