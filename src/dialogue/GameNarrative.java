@@ -13,7 +13,7 @@ public class GameNarrative {
     }
 
     private GameNarrative(Room room) {
-        gameNarrative.put(room, new Narrative());
+        gameNarrative.put(room, new Narrative(new String[]{}));
     }
 
     public Narrative getNarrative(Room room) {

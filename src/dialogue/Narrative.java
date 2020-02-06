@@ -7,8 +7,10 @@ public class Narrative {
     private boolean isNarrated = false;
 
     public Narrative() {
-        narrative.add(new String[] {});
-        narrative.add(new String[] {});
+    }
+
+    public Narrative(String[] s) {
+        narrative.add(s);
     }
 
     public void addNarrative(String[] s) {
@@ -17,7 +19,7 @@ public class Narrative {
 
     public String[] getNarrative(int index) {
         if (index > narrative.size() - 1) {
-            return new Narrative().getNarrative(index);
+            narrative.add(new String[]{});
         }
         return narrative.get(index);
     }
