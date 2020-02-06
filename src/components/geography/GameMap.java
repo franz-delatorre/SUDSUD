@@ -110,9 +110,9 @@ public class GameMap {
      * @return
      */
     private boolean roomExist(Point pt) {
-        for (int it = 0; it < openRooms.size(); it++) {
-            Point o = openRooms.get(it).getPoint();
-            if (o.getxAxis() == pt.getxAxis() && o.getyAxis() == pt.getyAxis()) {
+        for (Room room: openRooms) {
+            Point rm  = room.getPoint();
+            if (rm.getxAxis() == pt.getxAxis() && rm.getyAxis() == pt.getyAxis()) {
                 return true;
             }
         }

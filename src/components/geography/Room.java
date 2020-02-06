@@ -2,6 +2,7 @@ package components.geography;
 
 import components.item.EquippableItem;
 import components.unit.Unit;
+import components.unit.UnskilledUnit;
 import misc.Direction;
 
 import java.util.EnumMap;
@@ -16,6 +17,8 @@ public class Room{
     public Room(String name, Point point) {
         this.point = point;
         this.name = name;
+        enemy = new UnskilledUnit.Builder().health(0).build();
+        item = new EquippableItem.Builder().build();
     }
 
     public void setEnemy(Unit enemy) {

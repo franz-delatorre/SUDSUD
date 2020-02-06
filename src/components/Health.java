@@ -13,8 +13,8 @@ public class Health {
         return maxHealth;
     }
 
-    public void setMaxHealth(int maxHealth) {
-        this.maxHealth = maxHealth;
+    public void increaseMaxHealth(int maxHealth) {
+        this.maxHealth += maxHealth;
     }
 
     public void increaseCurrentHealth(int hpValue) {

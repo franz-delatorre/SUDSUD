@@ -27,14 +27,13 @@ public class HealSkill extends Skill {
     public void skillEffect(Unit user, Unit victim) {
         int userMaxHealth = user.getHealth().getMaxHealth();
         int userCurrentHealth = user.getHealth().getCurrentHealth();
-        Health userhealth = user.getHealth();
+        Health userHealth = user.getHealth();
 
         if (userCurrentHealth + healValue > userMaxHealth) {
-            userhealth.setCurrentHealth(userMaxHealth);
+            userHealth.setCurrentHealth(userMaxHealth);
             Broadcaster.relayHeal(userMaxHealth - userCurrentHealth);
         } else {
-            int totalHeal = userCurrentHealth + healValue;
-            userhealth.setCurrentHealth(totalHeal);
+            userHealth.increaseCurrentHealth(healValue);
             Broadcaster.relayHeal(healValue);
         }
     }

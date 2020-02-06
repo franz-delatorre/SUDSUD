@@ -10,12 +10,8 @@ import util.*;
 
 import java.util.Scanner;
 
-import static misc.TextColor.ANSI_BLACK;
-import static misc.TextColor.ANSI_BLUE;
-import static misc.TextColor.ANSI_CYAN;
-import static misc.TextColor.ANSI_RED;
-import static misc.TextColor.ANSI_PURPLE;
-import static misc.TextColor.ANSI_RESET;
+import static misc.TextColor.*;
+import static util.Sleep.sleep;
 
 public class BattleService {
     private static final Scanner scanner = new Scanner(System.in);
@@ -41,25 +37,25 @@ public class BattleService {
 
         int turn = 1;
         while (fightersStillAlive()) {
-            Sleep.sleep(1);
+            sleep(1);
             System.out.println("__________________________________");
             printHealth();
             printCooldown();
             battleIO();
-            Sleep.sleep(1);
+            sleep(1);
             printHealth();
-            Sleep.sleep(2);
+            sleep(2);
             if (!fightersStillAlive()) break;
             System.out.println();
             enemyAI();
-            Sleep.sleep(1);
+            sleep(1);
             printHealth();
             decrementCooldown();
             checkActiveBoostSkill(hero);
             checkActiveBoostSkill(enemy);
             System.out.println(ANSI_BLUE + " - END OF TURN " + turn++ + " - " + ANSI_BLACK);
             System.out.println("__________________________________");
-            Sleep.sleep(1);
+            sleep(1);
         }
         return winner();
     }
@@ -124,7 +120,6 @@ public class BattleService {
         Skill skill = user.getSkill();
         System.out.println(ANSI_CYAN + user.getName() + " used " + skill.getName() + ANSI_BLACK);
         SkillHelper.useSkill(user, victim);
-        SkillHelper.useSkill(user, victim);
     }
 
     /**
@@ -165,8 +160,7 @@ public class BattleService {
      * @return
      */
     private int winner() {
-        if (hero.isAlive()) return 1;
-        return 0;
+        return (hero.isAlive()) ? 1: 0;
     }
 
     /**
@@ -181,7 +175,7 @@ public class BattleService {
     private void normalAttack(Unit attacker, Unit victim) {
         System.out.println(attacker.getName() + " used normal attack");
 
-        Sleep.sleep(1);
+        sleep(1);
         //Will return if the attacker can evade the attack
         if (canEvade(victim.getUnitStats())) {
             System.out.println(victim.getName() + " evaded " + attacker.getName() + "'s attack");
@@ -193,11 +187,11 @@ public class BattleService {
         //Sets the damage to 2x the damage dealt if canCrit() is true
         Stats stat = attacker.getUnitStats();
         if (canCrit(stat)) {
-            Sleep.sleep(1);
+            sleep(1);
             System.out.println(ANSI_RED + "CRIT!!");
             damage += damage;
         }
-        Sleep.sleep(1);
+        sleep(1);
 
         // decreases the victim's hp
         DamageHelper.doDamage(victim.getHealth(), damage);
@@ -207,12 +201,12 @@ public class BattleService {
         int currHealth = attacker.getHealth().getCurrentHealth();
         int maxHealth = attacker.getHealth().getMaxHealth();
         if (lsValue > 0 && currHealth < maxHealth) {
-            Sleep.sleep(1);
+            sleep(1);
             int ls = (int) (damage * (lsValue / 100.0f));
             System.out.println(ANSI_RESET + "lifesteal" + ANSI_BLACK);
             HealthHelper.heal(attacker.getHealth(), ls);
         }
-        Sleep.sleep(1);
+        sleep(1);
     }
 
     /**`

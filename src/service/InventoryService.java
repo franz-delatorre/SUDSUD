@@ -24,12 +24,6 @@ public class InventoryService {
     private UnitEquipment equipment = new UnitEquipment();
     private SkilledUnit hero;
 
-    public boolean heroInventoryContains(EquippableItem item) {
-        return heroInventory.contains(item);
-    }
-
-    public boolean gameInventoryContains(EquippableItem item) {return gameInventory.contains(item); }
-
     public void setHero(SkilledUnit hero) {
         this.hero = hero;
     }
@@ -39,16 +33,20 @@ public class InventoryService {
     }
 
     /**
-     * Adds an item to the hero's inventory
+     * Adds an item to the hero's inventory if the item is in the game inventory and the hero
+     * does not have the item yet.
      * @param item
      */
     public void addItemToHeroInventory(EquippableItem item) {
-        heroInventory.addItem(item);
-        sleep(1);
-        System.out.println(ANSI_GREEN + "You found an item" + ANSI_BLACK);
-        sleep(1);
-        System.out.println(item.getName() + " is added in your inventory");
-        sleep(3);
+        if (gameInventory.contains(item)) {
+            if (heroInventory.contains(item)) return;
+            heroInventory.addItem(item);
+            sleep(1);
+            System.out.println(ANSI_GREEN + "You found an item" + ANSI_BLACK);
+            sleep(1);
+            System.out.println(item.getName() + " is added in your inventory");
+            sleep(3);
+        }
     }
 
     /**
@@ -145,7 +143,7 @@ public class InventoryService {
         Health h = hero.getHealth();
         if (item.getHealthBoost() > 0) {
             System.out.println(ANSI_GREEN + "Health: + " + item.getHealthBoost());
-            h.setMaxHealth(h.getMaxHealth() + item.getHealthBoost());
+            h.increaseMaxHealth(item.getHealthBoost());
         }
 
         if (item.getDamage() > 0) {

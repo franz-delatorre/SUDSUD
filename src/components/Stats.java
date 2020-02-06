@@ -15,7 +15,7 @@ public class Stats {
     }
 
     /**
-     * Increases the Stat Type by the stat Value given. If the
+     * Increases the StatType by the stat Value given. If the
      * Stat is >= 100 then the stat is set to 99.
      * @param statType
      * @param statValue
@@ -27,12 +27,12 @@ public class Stats {
         }
 
         int currentStatValue = stats.get(statType);
-        int newStatValue     = currentStatValue + statValue;
+        int newStatValue = currentStatValue + statValue;
         stats.put(statType, newStatValue);
     }
 
     /**
-     * Decreases the Stat Type by the stat Value given. If the
+     * Decreases the StatType by the stat Value given. If the
      * stat is < 0 then the stat is set to 0.
      * @param statType
      * @param statValue
@@ -40,7 +40,7 @@ public class Stats {
     public void decreaseStat(StatType statType, int statValue){
 
         int currentStatValue = stats.get(statType);
-        int newStatValue     = currentStatValue - statValue;
+        int newStatValue = currentStatValue - statValue;
         stats.put(statType, newStatValue);
     }
 
