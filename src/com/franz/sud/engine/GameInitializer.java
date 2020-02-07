@@ -1,4 +1,4 @@
-package com.franz.sud.components.engine;
+package com.franz.sud.engine;
 
 import com.franz.sud.components.geography.GameMap;
 import com.franz.sud.components.geography.Point;
@@ -61,7 +61,7 @@ public class GameInitializer {
     public void initialize() {
         setupUnits();
         setupItems();
-        setupDialogue();
+        setUpNarrative();
         setupRooms();
     }
 
@@ -194,8 +194,8 @@ public class GameInitializer {
     private void setupUnits() {
 
         // == Construction of Skills ==
-        HealSkill lesserHeal = new HealSkill("Lesser Heal");
-        HealSkill heal = new HealSkill("Heal");
+        HealSkill lesserHeal = new HealSkill("Lesser Heal", 30);
+        HealSkill heal = new HealSkill("Heal" , 60);
         DamageSkill lightningBolt = new DamageSkill("Lightning Bolt", 15);
         DamageSkill fireBolt = new DamageSkill("Fire Bolt", 30);
         SoulSteal soulSteal = new SoulSteal();
@@ -212,8 +212,6 @@ public class GameInitializer {
                 .lifesteal(10)
                 .duration(5)
                 .build();
-        heal.setHealValue(60);
-        lesserHeal.setHealValue(30);
 
         // == Construction of units ==
 
@@ -446,7 +444,7 @@ public class GameInitializer {
     /**
      * Sets up the game dialogue for each progress.
      */
-    private void setupDialogue() {
+    private void setUpNarrative() {
 
         // Sets the String array of each progress/room.
         String[] nullNarrative = new String[] {};
@@ -464,10 +462,10 @@ public class GameInitializer {
         };
 
         String[] foundAnItem = new String[] {
-                "Great! You found an item.",
-                "Items found will go directly to you inventory. press [I] to open your inventory",
+                "You found an item!",
+                "Items found will go directly to you inventory. Press [I] to open your inventory",
                 "Don't forget to inspect your item [I] and equip it to help you on your quest [U]",
-                "But first we must exit the map, press [E]"
+                "But first, we must exit the map press [E]"
         };
 
         String[] enemyFound = new String[] {
@@ -476,12 +474,12 @@ public class GameInitializer {
         };
 
         String[] enemySlain = new String[] {
-                "Good job buddy! you killed that banshee!",
-                "Look she dropped an item! Its an amulet! You'll look good if you wear it."
+                "Good job buddy! you killed the banshee!",
+                "Look, she dropped an item! It's an amulet! You'll look good if you wear it."
         };
 
         String[] bossFound = new String[] {
-                "To arms! beyond this door is Medusa!",
+                "To arms! Beyond this door is Medusa!",
                 "Defeat the level boss and you'll open new rooms in the map",
                 "Goodluck!!!"
         };

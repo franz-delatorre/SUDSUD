@@ -1,4 +1,4 @@
-package com.franz.sud.components.engine;
+package com.franz.sud.engine;
 
 import com.franz.sud.components.Stats;
 import com.franz.sud.components.geography.GameMap;
@@ -87,10 +87,6 @@ public class GameManager {
             case "c":
                 showCharacter();
                 break;
-            default:
-                System.out.println("Action invalid.");
-                getUserAction();
-                break;
             case "q":
                 System.out.println("Are you sure you want to quit and end the game? [Y] [N]");
                 switch (scanner.nextLine().toLowerCase()) {
@@ -101,6 +97,10 @@ public class GameManager {
                     case "n":
                         getUserAction();
                 }
+                break;
+            default:
+                System.out.println("Action invalid.");
+                getUserAction();
                 break;
         }
     }
@@ -120,25 +120,28 @@ public class GameManager {
         if (map.canMoveToAdjacentRoom(Direction.EAST, currRoom)) System.out.println("[D] Move right");
         if (map.canMoveToAdjacentRoom(Direction.WEST, currRoom)) System.out.println("[A] Move left");
 
-        switch (scanner.nextLine().toLowerCase()) {
-            case "w":
-                moveTo(Direction.NORTH);
-                break;
-            case "s":
-                moveTo(Direction.SOUTH);
-                break;
-            case "a":
-                moveTo(Direction.WEST);
-                break;
-            case "d":
-                moveTo(Direction.EAST);
-                break;
-            case "e":
-                return;
-            default:
-                System.out.println("Wrong input, try again");
-                move();
-        }
+        boolean exitLoop = true;
+        do {
+            switch (scanner.nextLine().toLowerCase()) {
+                case "w":
+                    moveTo(Direction.NORTH);
+                    break;
+                case "s":
+                    moveTo(Direction.SOUTH);
+                    break;
+                case "a":
+                    moveTo(Direction.WEST);
+                    break;
+                case "d":
+                    moveTo(Direction.EAST);
+                    break;
+                case "e":
+                    exitLoop = false;
+                    break;
+                default:
+                    System.out.println("Wrong input, try again");
+            }
+        } while (exitLoop);
     }
 
     /**
@@ -157,11 +160,9 @@ public class GameManager {
                 gameOver = true;
                 return;
             }
-            move();
         }
         else {
             System.out.println(ANSI_RED + "Wrong input, try again" + ANSI_BLACK);
-            move();
         }
     }
 
@@ -255,8 +256,7 @@ public class GameManager {
     }
 
     /**
-     * Checks the item variable of the room. The block exits if the item is not in the game Inventory.
-     * Also exits if the item already exist in the hero's inventory
+     * Checks the item variable of the room. Then adds the item to the hero's inventory.
      */
     private void addRoomItem() {
         Room room = map.getHeroLocation();

@@ -7,12 +7,9 @@ import com.franz.sud.misc.Broadcaster;
 public class HealSkill extends Skill {
     private int healValue;
 
-    public HealSkill(String name) {
-        setName(name);
-    }
-
-    public void setHealValue(int healValue) {
+    public HealSkill(String name, int healValue) {
         this.healValue = healValue;
+        setName(name);
     }
 
     /**

@@ -1,4 +1,4 @@
-package com.franz.sud.components.engine;
+package com.franz.sud.engine;
 
 import com.franz.sud.components.geography.Room;
 
