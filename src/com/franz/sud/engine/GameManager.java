@@ -1,22 +1,23 @@
 package com.franz.sud.engine;
 
-import com.franz.sud.components.Stats;
-import com.franz.sud.components.geography.GameMap;
-import com.franz.sud.components.geography.Room;
-import com.franz.sud.components.item.EquippableItem;
-import com.franz.sud.components.item.Inventory;
-import com.franz.sud.components.unit.SkilledUnit;
-import com.franz.sud.components.unit.Unit;
-import com.franz.sud.narrative.GameNarrative;
-import com.franz.sud.narrative.Narrative;
-import com.franz.sud.misc.*;
-import com.franz.sud.service.BattleService;
-import com.franz.sud.service.InventoryService;
+import com.franz.sud.cartridge.castlevania.CastlevaniaInitializer;
+import com.franz.sud.cartridge.castlevania.service.GameMapProgress;
+import com.franz.sud.engine.components.Stats;
+import com.franz.sud.engine.components.geography.GameMap;
+import com.franz.sud.engine.components.geography.Room;
+import com.franz.sud.engine.components.item.EquippableItem;
+import com.franz.sud.engine.components.unit.SkilledUnit;
+import com.franz.sud.engine.components.unit.Unit;
+import com.franz.sud.engine.components.narrative.GameNarrative;
+import com.franz.sud.engine.components.narrative.Narrative;
+import com.franz.sud.engine.misc.*;
+import com.franz.sud.cartridge.castlevania.service.BattleService;
+import com.franz.sud.cartridge.castlevania.service.InventoryService;
 
 import java.util.Scanner;
 
-import static com.franz.sud.misc.TextColor.*;
-import static com.franz.sud.util.Sleep.sleep;
+import static com.franz.sud.engine.misc.TextColor.*;
+import static com.franz.sud.engine.util.Sleep.sleep;
 
 public class GameManager {
 
@@ -31,14 +32,13 @@ public class GameManager {
     private GameMapProgress gameMapProgress;
     private GameNarrative gameNarrative;
     private InventoryService inventoryService;
-    private Inventory heroInventory;
     private Room previousRoom;
     private Room secondLocation;
     private SkilledUnit hero;
     private Unit finalBoss;
 
     public GameManager() {
-        GameInitializer gi = new GameInitializer();
+        CastlevaniaInitializer gi = new CastlevaniaInitializer();
         gi.initialize();
 
         hero = gi.getHero();
@@ -48,7 +48,6 @@ public class GameManager {
         gameMapProgress = gi.getGameMapProgress();
         gameOver = false;
         gameNarrative = gi.getGameNarrative();
-        heroInventory = new Inventory();
         map = gi.getGameMap();
         progress = 0;
         secondLocation = gi.getSecondLocation();
