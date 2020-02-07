@@ -11,8 +11,8 @@ import com.franz.sud.engine.components.unit.Unit;
 import com.franz.sud.engine.components.unit.UnskilledUnit;
 import com.franz.sud.engine.components.narrative.GameNarrative;
 import com.franz.sud.engine.components.narrative.Narrative;
-import com.franz.sud.engine.misc.Direction;
-import com.franz.sud.engine.misc.EquipmentType;
+import com.franz.sud.misc.Direction;
+import com.franz.sud.misc.EquipmentType;
 import com.franz.sud.cartridge.castlevania.service.InventoryService;
 
 import java.util.ArrayList;

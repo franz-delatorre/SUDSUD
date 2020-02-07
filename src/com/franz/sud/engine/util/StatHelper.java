@@ -1,8 +1,8 @@
 package com.franz.sud.engine.util;
 
 import com.franz.sud.engine.components.Stats;
-import com.franz.sud.engine.misc.Broadcaster;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.Broadcaster;
+import com.franz.sud.misc.StatType;
 
 public final class StatHelper {
 

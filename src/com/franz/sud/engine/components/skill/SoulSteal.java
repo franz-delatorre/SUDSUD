@@ -1,7 +1,7 @@
 package com.franz.sud.engine.components.skill;
 
 import com.franz.sud.engine.components.unit.Unit;
-import com.franz.sud.engine.misc.Broadcaster;
+import com.franz.sud.misc.Broadcaster;
 import com.franz.sud.engine.util.DamageHelper;
 import com.franz.sud.engine.util.HealthHelper;
 

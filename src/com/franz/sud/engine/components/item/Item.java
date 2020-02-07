@@ -1,7 +1,7 @@
 package com.franz.sud.engine.components.item;
 
 import com.franz.sud.engine.components.Stats;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.StatType;
 
 public abstract class Item {
     private String name;

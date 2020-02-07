@@ -2,7 +2,7 @@ package com.franz.sud.engine.components.unit;
 
 import com.franz.sud.engine.components.Health;
 import com.franz.sud.engine.components.Stats;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.StatType;
 
 public abstract class Unit {
     private String name;

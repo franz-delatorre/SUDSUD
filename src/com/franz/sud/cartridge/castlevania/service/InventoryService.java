@@ -7,14 +7,14 @@ import com.franz.sud.engine.components.item.Inventory;
 import com.franz.sud.engine.components.item.Item;
 import com.franz.sud.engine.components.item.UnitEquipment;
 import com.franz.sud.engine.components.unit.SkilledUnit;
-import com.franz.sud.engine.misc.EquipmentType;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.EquipmentType;
+import com.franz.sud.misc.StatType;
 import com.franz.sud.engine.util.StatHelper;
 
 import java.util.List;
 import java.util.Scanner;
 
-import static com.franz.sud.engine.misc.TextColor.*;
+import static com.franz.sud.misc.TextColor.*;
 import static com.franz.sud.engine.util.Sleep.sleep;
 
 public class InventoryService {

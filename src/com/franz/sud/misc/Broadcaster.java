@@ -1,8 +1,8 @@
-package com.franz.sud.engine.misc;
+package com.franz.sud.misc;
 
 import com.franz.sud.engine.components.Stats;
 
-import static com.franz.sud.engine.misc.TextColor.*;
+import static com.franz.sud.misc.TextColor.*;
 
 public class Broadcaster {
     

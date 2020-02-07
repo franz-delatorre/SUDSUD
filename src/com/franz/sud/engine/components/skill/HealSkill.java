@@ -2,7 +2,7 @@ package com.franz.sud.engine.components.skill;
 
 import com.franz.sud.engine.components.Health;
 import com.franz.sud.engine.components.unit.Unit;
-import com.franz.sud.engine.misc.Broadcaster;
+import com.franz.sud.misc.Broadcaster;
 
 public class HealSkill extends Skill {
     private int healValue;

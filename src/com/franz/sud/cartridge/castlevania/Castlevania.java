@@ -7,6 +7,7 @@ import com.franz.sud.engine.components.geography.GameMap;
 import com.franz.sud.engine.components.geography.Room;
 import com.franz.sud.engine.components.narrative.GameNarrative;
 import com.franz.sud.engine.components.unit.Unit;
+import com.franz.sud.misc.GameType;
 
 public class Castlevania implements Cartridge {
     private CastlevaniaInitializer initializer = new CastlevaniaInitializer();
@@ -19,8 +20,10 @@ public class Castlevania implements Cartridge {
     private Unit hero;
     private InventoryService inventoryService;
     private String name;
+    private GameType gameType;
 
-    public Castlevania() {
+    public Castlevania(GameType gameType) {
+        this.gameType = gameType;
         isFinished = false;
         name = "Castlevania";
     }
@@ -39,7 +42,7 @@ public class Castlevania implements Cartridge {
 
     @Override
     public void start() {
-
+        if (isFinished) return;
     }
 
     @Override
@@ -50,5 +53,10 @@ public class Castlevania implements Cartridge {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public GameType getGameType() {
+        return null;
     }
 }

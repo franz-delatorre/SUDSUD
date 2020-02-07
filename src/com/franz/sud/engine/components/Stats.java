@@ -1,6 +1,6 @@
 package com.franz.sud.engine.components;
 
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.StatType;
 
 import java.util.EnumMap;
 import java.util.Map;

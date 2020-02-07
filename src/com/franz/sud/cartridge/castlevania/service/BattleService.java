@@ -5,12 +5,12 @@ import com.franz.sud.engine.components.skill.Skill;
 import com.franz.sud.engine.components.skill.StatBoostSkill;
 import com.franz.sud.engine.components.unit.SkilledUnit;
 import com.franz.sud.engine.components.unit.Unit;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.StatType;
 import com.franz.sud.engine.util.*;
 
 import java.util.Scanner;
 
-import static com.franz.sud.engine.misc.TextColor.*;
+import static com.franz.sud.misc.TextColor.*;
 import static com.franz.sud.engine.util.Sleep.sleep;
 
 public class BattleService {

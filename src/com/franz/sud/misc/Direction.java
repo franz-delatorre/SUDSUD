@@ -1,4 +1,4 @@
-package com.franz.sud.engine.misc;
+package com.franz.sud.misc;
 
 public enum Direction {
     NORTH{

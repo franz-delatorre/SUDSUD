@@ -3,7 +3,7 @@ package com.franz.sud.engine.components.geography;
 import com.franz.sud.engine.components.item.EquippableItem;
 import com.franz.sud.engine.components.unit.Unit;
 import com.franz.sud.engine.components.unit.UnskilledUnit;
-import com.franz.sud.engine.misc.Direction;
+import com.franz.sud.misc.Direction;
 
 import java.util.EnumMap;
 

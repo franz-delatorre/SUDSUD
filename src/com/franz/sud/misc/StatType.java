@@ -1,22 +1,22 @@
-package com.franz.sud.engine.misc;
+package com.franz.sud.misc;
 
-public enum EquipmentType {
-    WEAPON {
+public enum StatType {
+    EVASION {
         @Override
         public String toString() {
-            return "Weapon";
+            return "Evasion";
         }
     },
-    ARMOR {
+    CRITICAL_CHANCE {
         @Override
         public String toString() {
-            return "Armor";
+            return "Crit Chance";
         }
     },
-    AMULET {
+    LIFESTEAL {
         @Override
         public String toString() {
-            return "Amulet";
+            return "Lifesteal";
         }
     };
 }

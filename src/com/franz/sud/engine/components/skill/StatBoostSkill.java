@@ -3,7 +3,7 @@ package com.franz.sud.engine.components.skill;
 import com.franz.sud.engine.components.Stats;
 import com.franz.sud.engine.components.unit.Unit;
 import com.franz.sud.engine.util.StatHelper;
-import com.franz.sud.engine.misc.StatType;
+import com.franz.sud.misc.StatType;
 
 public class StatBoostSkill extends Skill {
     private Stats skillStats;

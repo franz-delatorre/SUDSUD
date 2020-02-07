@@ -1,4 +1,4 @@
-package com.franz.sud.engine.misc;
+package com.franz.sud.misc;
 
 public class TextColor {
     public static final String ANSI_RESET = "\u001B[0m";

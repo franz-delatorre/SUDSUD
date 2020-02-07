@@ -1,6 +1,6 @@
 package com.franz.sud.engine.components.item;
 
-import com.franz.sud.engine.misc.EquipmentType;
+import com.franz.sud.misc.EquipmentType;
 
 public class EquippableItem extends Item {
     private EquipmentType equipmentType;

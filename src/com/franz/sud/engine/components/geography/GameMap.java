@@ -1,7 +1,7 @@
 package com.franz.sud.engine.components.geography;
 
-import com.franz.sud.engine.misc.Direction;
-import com.franz.sud.engine.misc.TextColor;
+import com.franz.sud.misc.Direction;
+import com.franz.sud.misc.TextColor;
 
 import java.util.ArrayList;
 

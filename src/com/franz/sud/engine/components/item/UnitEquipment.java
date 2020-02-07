@@ -1,6 +1,6 @@
 package com.franz.sud.engine.components.item;
 
-import com.franz.sud.engine.misc.EquipmentType;
+import com.franz.sud.misc.EquipmentType;
 
 import java.util.EnumMap;
 import java.util.Map;
