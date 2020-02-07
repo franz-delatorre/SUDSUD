@@ -1,4 +1,4 @@
-import game.engine.GameEngine;
+import com.franz.sud.components.engine.GameEngine;
 
 public class Main {
 
